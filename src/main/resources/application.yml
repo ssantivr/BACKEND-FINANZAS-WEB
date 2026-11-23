@@ -8,6 +8,8 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/finanzas}
+      # Explicit name, so an Atlas URI copied without "/finanzas" still works (it takes precedence over the URI).
+      database: ${MONGODB_DATABASE:finanzas}
       auto-index-creation: true
   jackson:
     default-property-inclusion: non_null
