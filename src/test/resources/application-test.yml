@@ -1,0 +1,12 @@
+app:
+  jwt:
+    secreto: secreto-de-pruebas-solo-para-tests-0123456789
+  cookie:
+    segura: false
+    same-site: Lax
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.14

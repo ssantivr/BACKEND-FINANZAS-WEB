@@ -1,0 +1,29 @@
+# Render Blueprint: backend (Java 21 + Spring Boot, Docker). The frontend is deployed on Vercel.
+# New > Blueprint > select this repository (BACKEND-FINANZAS-WEB). Fill the variables marked sync: false in the Render dashboard.
+services:
+  - type: web
+    name: finanzas-api
+    runtime: docker
+    plan: free
+    rootDir: .
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    autoDeploy: true
+    envVars:
+      - key: MONGODB_URI          # MongoDB Atlas connection string, including the database name
+        sync: false
+      - key: JWT_SECRET           # random, at least 32 characters
+        generateValue: true
+      - key: FRONTEND_URL         # e.g. https://finanzas-personales.vercel.app (used in password-recovery links)
+        sync: false
+      - key: CORS_ORIGINS         # same Vercel URL; the app calls the API through the Vercel rewrite anyway
+        sync: false
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: COOKIE_SAMESITE      # Lax: the browser sees the API on the Vercel domain (same site)
+        value: Lax
+      - key: MAIL_FROM
+        value: no-responder@finanzas.app
+      # Optional SMTP (without it the API logs that the e-mail was not sent):
+      # SPRING_MAIL_HOST, SPRING_MAIL_PORT, SPRING_MAIL_USERNAME, SPRING_MAIL_PASSWORD,
+      # SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true, SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true

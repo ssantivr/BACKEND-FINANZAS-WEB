@@ -1,0 +1,17 @@
+# Local development only. Never use this secret outside your machine.
+app:
+  jwt:
+    secreto: ${JWT_SECRET:solo-desarrollo-local-cambiar-en-produccion-0123456789}
+  cookie:
+    segura: false
+    same-site: Lax
+  correo:
+    # No SMTP on a developer machine: print recovery links and budget alerts in the API console.
+    mostrar-en-consola: true
+
+# Used only when the embedded MongoDB is on the classpath (mvn spring-boot:run with the test classpath).
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 7.0.14
