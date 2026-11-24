@@ -34,8 +34,8 @@ ArchUnit comprueba la regla de dependencias en cada `./mvnw test` (`Arquitectura
 |---|---|---|
 | `MONGODB_URI` | Sí (producción) | `mongodb+srv://usuario:clave@cluster.mongodb.net/finanzas` |
 | `JWT_SECRET` | Sí | 32 caracteres o más, aleatorio |
-| `FRONTEND_URL` | Sí | `https://finanzas-personales.vercel.app` |
-| `CORS_ORIGINS` | No | `https://finanzas-personales.vercel.app` |
+| `FRONTEND_URL` | Sí | `https://finanzas-personales-lovat-eight.vercel.app` |
+| `CORS_ORIGINS` | No | `https://finanzas-personales-lovat-eight.vercel.app` |
 | `COOKIE_SECURE` / `COOKIE_SAMESITE` | No | `true` / `Lax` |
 | `SPRING_MAIL_HOST`, `SPRING_MAIL_USERNAME`, `SPRING_MAIL_PASSWORD`… | No | Sin SMTP, los correos no se envían y queda una advertencia en el log |
 

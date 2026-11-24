@@ -14,7 +14,7 @@ services:
         sync: false
       - key: JWT_SECRET           # random, at least 32 characters
         generateValue: true
-      - key: FRONTEND_URL         # e.g. https://finanzas-personales.vercel.app (used in password-recovery links)
+      - key: FRONTEND_URL         # e.g. https://finanzas-personales-lovat-eight.vercel.app (used in password-recovery links)
         sync: false
       - key: CORS_ORIGINS         # same Vercel URL; the app calls the API through the Vercel rewrite anyway
         sync: false
