@@ -1,0 +1,63 @@
+@startuml ACT-03_Iniciar_sesion
+title ACT-03 Iniciar sesión con bloqueo (CU-02)
+footer Corregido en ai/redesign — render NO VERIFICADO
+
+|Usuario|
+start
+:Ingresar correo y clave;
+|Cliente Web|
+:POST /api/v1/auth/login;
+|API|
+:Buscar usuario por correo;
+|Base de datos|
+:Leer usuario;
+|API|
+if (¿Existe y no está ELIMINADA?) then (no)
+  |Cliente Web|
+  :Mostrar credenciales inválidas (mensaje genérico);
+  note right
+    Mismo mensaje para usuario inexistente, eliminado o clave errónea.
+    El usuario puede reintentar (ciclo omitido para mantener un solo final).
+  end note
+else (sí)
+  |API|
+  if (¿bloqueado_hasta mayor que ahora?) then (sí, 423)
+    |Cliente Web|
+    :Mostrar cuenta bloqueada y tiempo restante;
+  else (no)
+    |API|
+    :Verificar hash de la clave;
+    if (¿Clave coincide?) then (no)
+      :Incrementar intentos_fallidos;
+      |Base de datos|
+      :UPDATE usuario SET intentos_fallidos;
+      |API|
+      if (¿intentos_fallidos = 5?) then (sí)
+        :Fijar bloqueado_hasta = ahora + 15 min;
+        |Base de datos|
+        :UPDATE usuario SET bloqueado_hasta;
+        note right
+          ⚠ NO VERIFICADO: bloqueo al 5.º fallo seguido es una
+          interpretación de RN-08 (respaldada por CHECK intentos_fallidos 0..5).
+        end note
+      else (no)
+      endif
+      |Cliente Web|
+      :Mostrar credenciales inválidas (mensaje genérico);
+    else (sí)
+      |API|
+      :Reiniciar intentos_fallidos y bloqueado_hasta;
+      |Base de datos|
+      :UPDATE usuario (reinicia contadores);
+      |API|
+      :Emitir access token 15 min y refresh token 7 días;
+      |Base de datos|
+      :INSERT sesion_refresco (hash);
+      |Cliente Web|
+      :Guardar access token y abrir sesión;
+    endif
+  endif
+endif
+|Usuario|
+stop
+@enduml

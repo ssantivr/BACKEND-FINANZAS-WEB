@@ -1,0 +1,55 @@
+@startuml DEV-01
+title DEV-01 Paquetes y capas (co.finanzas)
+package "co.finanzas" {
+  package dominio {
+    package modelo
+    package valor
+    package tipos
+    package excepciones
+  }
+  package aplicacion {
+    package "puertos.entrada"
+    package "puertos.salida"
+    package servicios
+    package dto
+  }
+  package infraestructura {
+    package web
+    package seguridad
+    package persistencia
+    package notificacion
+    package configuracion
+  }
+}
+package "frontend (finanzas-web)" {
+  package features
+  package api
+  package components
+  package app
+}
+package "deploy" {
+  package "docker-compose, nginx/finanzas.conf, respaldo"
+}
+infraestructura ..> aplicacion : usa / implementa puertos
+aplicacion ..> dominio : usa
+web ..> "puertos.entrada"
+servicios ..> "puertos.salida"
+servicios ..> dto
+persistencia ..> "puertos.salida"
+notificacion ..> "puertos.salida"
+seguridad ..> "puertos.salida"
+configuracion ..> servicios : cablea
+note right of dominio
+  Reglas ArchUnit: dominio no depende de aplicacion, infraestructura,
+  Spring ni jakarta.persistence; aplicacion no depende de infraestructura;
+  web solo invoca puertos.entrada; sin ciclos bajo aplicacion.servicios.
+end note
+note bottom of infraestructura
+  Migraciones: backend/src/main/resources/db/migration/
+  V1__esquema.sql, V2__categorias_predeterminadas.sql
+end note
+note as NR
+  ⚠ reconstruido desde el texto de la vista; comparar con el PNG original
+end note
+footer Corregido en ai/redesign — render NO VERIFICADO
+@enduml

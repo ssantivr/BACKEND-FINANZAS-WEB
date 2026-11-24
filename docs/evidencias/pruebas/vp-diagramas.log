@@ -1,0 +1,118 @@
+# Verificación de los .vpp (2026-11-21 20:25)
+sha256 respaldo (../RESPALDO_VPP/Finanzas_Personales_5_diagramas_antes_de_mejorar_2026-11-21.vpp):
+b97f8ea1bcc7f05ab0f94daa6305532eddf3f7102969f63854a34a12fbab5a1e
+sha256 modelo/Finanzas_Personales_5_diagramas.vpp (mejorado):
+f1e7889cef101bdc6b07b3fee85e77e26d91059abc77f975d9aaf034f6a46fd4
+sha256 modelo/Finanzas_Personales_despliegues.vpp (solo despliegues):
+0d630d2fe51bda4a6c0f3689bbe20edf2cc7e5256b7a42cbfb8fde0cc9656eeb
+
+Comparación de elementos (ExportXML del original vs del mejorado):
+diagramas antes: ['LOG-01 Modelo de dominio', 'DEV-01 Módulos y dependencias', 'FUN-01 Componentes funcionales', 'DEP-01 Despliegue', 'CTX-01 Contexto del sistema']
+diagramas ahora: ['LOG-01 Modelo de dominio', 'DEV-01 Módulos y dependencias', 'FUN-01 Componentes funcionales', 'OBSOLETO – DEP-01 Despliegue (PostgreSQL y Docker, ya no aplica)', 'DEP-01 Despliegue local (verificado)', 'DEP-02 Despliegue en producción (planificado, NO VERIFICADO)', 'OBSOLETO – CTX-01 Contexto (incluía respaldos, ya no aplica)', 'CTX-01 Contexto del sistema']
+figuras 244 -> 273 | conectores 93 -> 105
+  Artifact 11 -> 21
+  Association 13 -> 22
+  AssociationEnd 26 -> 44
+  Attribute 191 -> 192
+  Node 10 -> 26
+  Qualifier 26 -> 44
+  Stereotype 33 -> 34
+  TaggedValue 28 -> 72
+  TaggedValueContainer 10 -> 32
+El resto de tipos de elemento no cambió.
+
+Finanzas_Personales_despliegues.vpp (ExportXML):
+  diagramas: ['DEP-01 Despliegue local (verificado)', 'DEP-02 Despliegue en producción (planificado, NO VERIFICADO)']
+  figuras 26 | conectores 9
+  nodos 16 | artefactos 10 | rutas de comunicación 9 | valores etiquetados 44
+
+Imágenes exportadas con ExportDiagramImage (bytes):
+  CTX-01 Contexto del sistema.png 96275
+  DEP-01 Despliegue local (verificado).png 309977
+  DEP-02 Despliegue en producción (planificado, NO VERIFICADO).png 312616
+  DEV-01 Módulos y dependencias.png 3829768
+  FUN-01 Componentes funcionales.png 226231
+  LOG-01 Modelo de dominio.png 269931
+
+# Limpieza y vista por capas (2026-11-21 20:50)
+sha256 modelo/Finanzas_Personales_5_diagramas.vpp:
+56f0ce849486f9e32514b794ec2e02d7209a4f877b3925239daa86e5cf27f238
+diagramas antes: ['LOG-01 Modelo de dominio', 'DEV-01 Módulos y dependencias', 'FUN-01 Componentes funcionales', 'OBSOLETO – DEP-01 Despliegue (PostgreSQL y Docker, ya no aplica)', 'DEP-01 Despliegue local (verificado)', 'DEP-02 Despliegue en producción (planificado, NO VERIFICADO)', 'OBSOLETO – CTX-01 Contexto (incluía respaldos, ya no aplica)', 'CTX-01 Contexto del sistema']
+diagramas ahora: ['LOG-01 Modelo de dominio', 'DEV-01 Capas y dependencias', 'DEV-02 Detalle de clases por paquete (anexo)', 'FUN-01 Componentes funcionales', 'DEP-01 Despliegue local (verificado)', 'DEP-02 Despliegue en producción (planificado, NO VERIFICADO)', 'CTX-01 Contexto del sistema']
+figuras 273 -> 264
+  Class 123 -> 122
+  ConstraintElement 3 -> 3
+  Node 26 -> 16
+  Artifact 21 -> 10
+  Association 22 -> 17
+  Dependency 34 -> 20
+  Package 21 -> 21
+  YdDfdExternalEntity 3 -> 2
+  YdDfdDataFlow 4 -> 3
+Comprobación de la limpieza: los 6 diagramas vigentes, exportados antes y después, son idénticos píxel a píxel (PIL ImageChops.difference sin diferencias).
+
+== Correcciones de LOG-01 aplicadas al .vpp (2026-11-22) ==
+antes:   56f0ce849486f9e32514b794ec2e02d7209a4f877b3925239daa86e5cf27f238
+despues: 4065a36cf9ecd8a4603538d1a5e6bb99d9033cd9c6016bc101cf560534a2b5f0
+Diagramas iguales: True (7)
+  ApiProfile: 2 -> 1
+  Attribute: 192 -> 198
+  Operation: 245 -> 251
+  Parameter: 365 -> 369
+  Style: 196 -> 98
+  StyleSetContainer: 2 -> 1
+  ValueSpecification: 2 -> 1
+  WSDLContainer: 2 -> 1
+  XSDSchema: 2 -> 1
+  XSDSimpleType: 88 -> 44
+ConstraintElement: 3 -> 3
+Usuario tiene "bloqueada": False | tiene "estaActiva": True
+  idéntica CTX-01 Contexto del sistema.png
+  idéntica DEP-01 Despliegue local (verificado).png
+  idéntica DEP-02 Despliegue en producción (planificado, NO VERIFICADO).png
+  idéntica DEV-01 Capas y dependencias.png
+  cambia   DEV-02 Detalle de clases por paquete (anexo).png
+  idéntica FUN-01 Componentes funcionales.png
+  cambia   LOG-01 Modelo de dominio.png
+
+== FUN-01 y despliegues corregidos (2026-11-22) ==
+antes (commit 81dde20): 5_diagramas 4065a36cf9ecd8a4603538d1a5e6bb99d9033cd9c6016bc101cf560534a2b5f0 / despliegues 0d630d2fe51bda4a6c0f3689bbe20edf2cc7e5256b7a42cbfb8fde0cc9656eeb
+despues: 5_diagramas c7c5f3f83ba60e8c7751bb93eae726fb5f2f494bedd3dd0534515724913bfc06 / despliegues df99530a63b4d06ca44c7c4fe81edbd9150e5c9cf9f9610a1af31a2a4b943eb3
+Diagramas iguales: True (7)
+  Artifact: 10 -> 8
+  Association: 17 -> 15
+  AssociationEnd: 34 -> 30
+  Node: 16 -> 14
+  Qualifier: 34 -> 30
+  TaggedValue: 44 -> 0
+  TaggedValueContainer: 22 -> 18
+  Usage: 23 -> 26
+ConstraintElement: 3 | TaggedValue en el proyecto: 0
+Proyecto de despliegues: ['DEP-01 Despliegue local (verificado)', 'DEP-02 Despliegue en producción (planificado, NO VERIFICADO)'] | TaggedValue: 0
+  despliegues.vpp DEP-01 igual al principal: True
+  despliegues.vpp DEP-02 igual al principal: True
+Imágenes: CTX-01, DEV-01 y DEV-02 idénticas; FUN-01, DEP-01, DEP-02 y LOG-01 cambian.
+
+== Frontend, backend y base de datos completos (2026-11-22) ==
+antes (commit b92c753): c7c5f3f83ba60e8c7751bb93eae726fb5f2f494bedd3dd0534515724913bfc06
+despues: 4a9cadf395634bc66502cd8ed5d075d5e9214a472f0c85c62a01ee48cc66cfff
+Diagramas: 7 -> 8; nuevo: ['LOG-02 Modelo de datos (MongoDB)']
+  Association: 15 -> 22
+  AssociationEnd: 30 -> 44
+  Attribute: 198 -> 286
+  Class: 122 -> 161
+  Dependency: 20 -> 22
+  Operation: 251 -> 264
+  Package: 21 -> 22
+  Parameter: 369 -> 397
+  Qualifier: 30 -> 44
+ConstraintElement: 3
+  idéntica CTX-01 Contexto del sistema.png
+  idéntica DEP-01 Despliegue local (verificado).png
+  idéntica DEP-02 Despliegue en producción (planificado, NO VERIFICADO).png
+  cambia   DEV-01 Capas y dependencias.png
+  cambia   DEV-02 Detalle de clases por paquete (anexo).png
+  idéntica FUN-01 Componentes funcionales.png
+  idéntica LOG-01 Modelo de dominio.png
+  idéntica LOG-02 Modelo de datos (MongoDB).png
+Nota: DEV-02 asigna a las clases nuevas el zOrder de su paquete; con un zOrder mayor, el exportador PNG las dibujaba debajo de la caja de la capa.

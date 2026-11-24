@@ -1,0 +1,28 @@
+@startuml CTX-01_Contexto
+title CTX-01 Contexto del sistema (Finanzas Personales)
+footer Corregido en ai/redesign — render NO VERIFICADO
+left to right direction
+
+actor Usuario as U
+component "Finanzas Personales" as FP <<system>>
+component "Servicio de correo" as SC <<system>>
+component "Almacenamiento de respaldos" as AR <<external system>>
+actor "Reloj del sistema" as RELOJ <<system>>
+
+U --> FP : Gestiona cuenta y sesión (CU-01, CU-02, CU-09)\nRegistra y mantiene movimientos (CU-03, CU-04)\nAdministra categorías y presupuestos (CU-05, CU-06)\nConsulta historial y resumen (CU-07, CU-08)\n[HTTPS]
+FP --> SC : Solicita envío de correo (CU-09, CU-10)\n[SMTP + STARTTLS 587]
+FP --> AR : Envía respaldo cifrado (proceso programado)\n[HTTPS S3-compatible]
+RELOJ --> FP : Dispara tareas programadas
+
+note right of SC
+  Mismo nombre y estereotipo <<system>> que en FUN-01.
+end note
+note bottom of RELOJ
+  ⚠ NO VERIFICADO: "Reloj del sistema" no figura en VISTA_CONTEXTO §1.2;
+  se incluye por coherencia con FUN-01. La flecha es propuesta.
+end note
+note bottom of AR
+  ⚠ NO VERIFICADO: estereotipo <<external system>> tomado de VISTA_CONTEXTO §1.2;
+  la guía solo unifica "Servicio de correo".
+end note
+@enduml

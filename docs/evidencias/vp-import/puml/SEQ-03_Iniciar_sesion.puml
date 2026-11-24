@@ -1,0 +1,60 @@
+@startuml SEQ-03_Iniciar_sesion
+title SEQ-03 Iniciar sesión (CU-02)
+footer Corregido en ai/redesign — render NO VERIFICADO
+skinparam sequenceMessageAlign left
+autonumber
+
+actor Usuario as U
+participant ClienteWeb as W
+participant AuthController as C
+participant ServicioAutenticacion as S
+participant "u : Usuario" as US
+participant IRepositorioUsuarios as RU
+participant ICifradorContrasena as H
+participant IEmisorTokens as T
+
+U -> W : ingresar correo y clave
+W -> C : POST /api/v1/auth/login
+C -> S : iniciarSesion(correo, clave)
+S -> RU : buscarPorCorreo(correo)
+RU --> S : Optional<Usuario>
+alt usuario no existe o estado ELIMINADA
+  S --> C : CredencialesInvalidasException
+  note right of S
+    ⚠ NO VERIFICADO: ELIMINADA responde 401 genérico (supuesto, D-1);
+    el nombre CredencialesInvalidasException es inventado (no existe en LOG-02).
+  end note
+  C --> W : 401 mensaje genérico
+else usuario existe
+  S -> US : estaBloqueado(ahora)
+  US --> S : boolean
+  alt bloqueado
+    S --> C : CuentaBloqueadaException
+    note right of S : ⚠ NO VERIFICADO: nombre inventado, no existe en LOG-02; confirmar.
+    C --> W : 423 Locked + tiempo restante
+    W --> U : cuenta bloqueada
+  else no bloqueado
+    S -> H : coincide(clave, hash)
+    H --> S : boolean
+    alt no coincide
+      S -> US : registrarIntentoFallido(ahora)
+      note right of US
+        RN-08: al 5.º intento fallido fija bloqueadoHasta = ahora + 15 min.
+        ⚠ NO VERIFICADO: la atomicidad (UPDATE atómico vs. guardar(u))
+        está por decidir; LOG-02 solo tiene guardar/buscar*.
+      end note
+      S -> RU : guardar(u)
+      S --> C : CredencialesInvalidasException
+      C --> W : 401 mensaje genérico
+    else coincide
+      S -> US : reiniciarIntentos()
+      S -> RU : guardar(u)
+      S -> T : emitir(usuario)
+      T --> S : TokensDTO
+      S --> C : TokensDTO
+      C --> W : 200 accessToken + cookie refresh HttpOnly
+      W --> U : sesión iniciada
+    end
+  end
+end
+@enduml

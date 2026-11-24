@@ -1,0 +1,79 @@
+@startuml SEQ-01_Registrar_gasto
+title SEQ-01 Registrar gasto (CU-03 + CU-10)
+footer Corregido en ai/redesign — render NO VERIFICADO
+skinparam sequenceMessageAlign left
+autonumber
+
+actor Usuario as U
+participant ClienteWeb as W
+participant MovimientoController as C
+participant ServicioMovimientos as S
+participant IRepositorioCategorias as RC
+participant Gasto as G
+participant IRepositorioMovimientos as RM
+participant IEvaluadorPresupuesto as E
+participant IRepositorioPresupuestos as RP
+participant INotificador as N
+
+U -> W : confirmarFormulario(datos)
+W -> C : POST /api/v1/movimientos (tipo GASTO) + Bearer
+C -> C : idUsuario = token.sub
+C -> S : registrarGasto(cmd)
+note over S, RP : inicio transacción
+S -> RC : buscarDisponible(idCategoria, idUsuario)
+RC --> S : Optional<Categoria>
+alt categoría vacía o tipo distinto de GASTO
+  S --> C : CategoriaNoDisponibleException
+  C --> W : 422
+  W --> U : error, recarga categorías
+else categoría válida
+  S -> G : new Gasto(idUsuario, Dinero, fecha, descripcion, categoria, metodoPago)
+  G -> G : validar() RN-01, RN-02
+  alt datos inválidos
+    G --> S : ValidacionException
+    note right of G : ⚠ NO VERIFICADO: nombre inventado, no existe en LOG-02; confirmar.
+    S --> C : error de validación
+    C --> W : 422
+    note right of C
+      ⚠ NO VERIFICADO: la guía (fila 5) indica 400 para 5a;
+      el diagrama Mermaid de referencia usa 422. Confirmar.
+    end note
+    W --> U : marca campos incorrectos
+  else datos válidos
+    S -> RM : guardar(gasto)
+    alt fallo de persistencia
+      RM --> S : error
+      note over S : rollback
+      S --> C : error
+      C --> W : 500
+      W --> U : No se pudo guardar, conserva formulario
+    else guardado
+      S -> E : evaluar(gasto)
+      note right of E
+        ⚠ NO VERIFICADO: sumarGastos y la detección de EXCEDIDO
+        dentro de evaluar son un supuesto de diseño
+        (el original no detallaba esta colaboración).
+      end note
+      E -> RP : buscar(idUsuario, idCategoria, periodo)
+      RP --> E : Optional<Presupuesto>
+      E -> RM : sumarGastos(idUsuario, idCategoria, periodo)
+      RM --> E : consumo
+      opt consumo >= límite (RN-11 EXCEDIDO) y presupuesto existe
+        E -> RP : UPDATE presupuesto SET notificado=true WHERE id=? AND NOT notificado
+        RP --> E : filas afectadas
+      end
+      note over S, RP : commit
+      opt filas afectadas = 1 (primera vez, RN-12)
+        note over E, N
+          ⚠ NO VERIFICADO: el envío asíncrono, fuera de la transacción
+          y después del commit, no estaba definido en el original.
+        end note
+        E ->> N : enviarAlertaPresupuesto(correo: Email, p: PresupuestoDTO)
+      end
+      S --> C : MovimientoDTO
+      C --> W : 201 Created + Location
+      W --> U : confirmación y saldo actualizado
+    end
+  end
+end
+@enduml

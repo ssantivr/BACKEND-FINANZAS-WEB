@@ -1,0 +1,70 @@
+@startuml FUN-01_Casos_de_uso
+title FUN-01 Casos de uso (versión corregida)
+footer Corregido en ai/redesign — render NO VERIFICADO
+left to right direction
+
+actor Usuario as U
+actor "Servicio de correo" as SC <<system>>
+actor "Reloj del sistema" as RELOJ <<system>>
+
+rectangle "Finanzas Personales" {
+  usecase "CU-01 Registrarse" as CU01
+  usecase "CU-02 Iniciar sesión" as CU02
+  usecase "CU-03 Registrar movimiento" as CU03
+  usecase "CU-04 Modificar o eliminar movimiento" as CU04
+  usecase "CU-05 Gestionar categorías personalizadas" as CU05
+  usecase "CU-06 Gestionar presupuestos" as CU06
+  usecase "CU-07 Consultar historial" as CU07
+  usecase "CU-08 Consultar resumen financiero" as CU08
+  usecase "CU-09 Recuperar contraseña" as CU09
+  usecase "CU-10 Notificar presupuesto excedido" as CU10
+  usecase "CU-11 Seleccionar periodo y filtros" as CU11
+  usecase "Respaldo diario (técnico)" as RESP
+}
+
+U -- CU01
+U -- CU02
+U -- CU03
+U -- CU04
+U -- CU05
+U -- CU06
+U -- CU07
+U -- CU08
+U -- CU09
+SC -- CU09
+SC -- CU10
+RELOJ -- RESP
+
+CU07 ..> CU11 : <<include>>
+CU08 ..> CU11 : <<include>>
+CU10 ..> CU03 : <<extend>>\n[Gasto guardado]
+CU10 ..> CU04 : <<extend>>\n[Gasto modificado]
+
+note bottom of CU04
+  Extension point: "Gasto modificado"
+  (CU-10 extiende CU-03 y CU-04; RF-12, RF-20)
+end note
+
+note as NPRE
+  Precondición común: sesión iniciada (CU-02).
+  Aplica a CU-03, CU-04, CU-05, CU-06, CU-07 y CU-08.
+  No es <<include>>. CU-01, CU-02 y CU-09 no la requieren.
+end note
+NPRE .. CU03
+NPRE .. CU04
+NPRE .. CU05
+NPRE .. CU06
+NPRE .. CU07
+NPRE .. CU08
+
+note as NCU02
+  CU-02: renovar sesión (RF-05) y cerrar sesión (RF-06).
+end note
+NCU02 .. CU02
+
+note as NRESP
+  ⚠ NO VERIFICADO: "Respaldo diario" es una propuesta (no es CU del catálogo);
+  confirmar o dejar el actor Reloj del sistema sin caso.
+end note
+NRESP .. RESP
+@enduml

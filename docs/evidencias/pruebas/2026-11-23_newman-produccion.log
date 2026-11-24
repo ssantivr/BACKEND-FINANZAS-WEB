@@ -1,0 +1,246 @@
+(node:12252) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+newman
+
+Finanzas Personales API
+
+□ 1. Autenticación
+└ Registro (RF-01, HU-01)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/registro [201 Created, 1.18kB, 12.1s]
+  √  HTTP 201
+  √  Devuelve access token
+  √  El refresh token no viaja en el cuerpo
+
+└ Registro duplicado -> 409 (RN-06)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/registro [409 Conflict, 872B, 519ms]
+  √  HTTP 409
+  √  Problem Details con codigo CORREO_DUPLICADO
+
+└ Registro con clave corta -> 400 (RN-07)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/registro [400 Bad Request, 890B, 234ms]
+  √  HTTP 400
+  √  Problem Details con codigo CLAVE_CORTA
+
+└ Login incorrecto -> 401 sin decir qué falló (HU-02)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/login [401 Unauthorized, 884B, 2.4s]
+  √  HTTP 401
+  √  Mensaje genérico
+
+└ Login (RF-03)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/login [200 OK, 1.17kB, 2.2s]
+  √  HTTP 200
+  √  El refresh token no viaja en el cuerpo
+
+└ Renovar sin cabecera X-Requested-With -> 403 (CSRF)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/renovar [403 Forbidden, 936B, 273ms]
+  √  HTTP 403
+  √  Código ORIGEN_NO_PERMITIDO
+
+└ Renovar sesión con la cookie (RF-05)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/renovar [200 OK, 1.17kB, 587ms]
+  √  HTTP 200
+
+□ 2. Categorías
+└ Categorías de gasto (RF-14)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias?tipo=GASTO [200 OK, 2.01kB, 1045ms]
+  √  HTTP 200
+  √  Trae las predeterminadas
+  √  Cada categoría trae su color #rrggbb
+
+└ Categorías de ingreso
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias?tipo=INGRESO [200 OK, 1.46kB, 386ms]
+  √  HTTP 200
+
+└ Crear categoría propia (RF-15)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias [201 Created, 866B, 440ms]
+  √  HTTP 201
+  √  No es predeterminada
+  √  Guarda el color elegido en minúsculas
+
+└ Color inválido -> 422 (COLOR_INVALIDO)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias [422 Unprocessable Entity, 898B, 210ms]
+  √  HTTP 422
+  √  Problem Details con codigo COLOR_INVALIDO
+
+└ Categoría duplicada -> 409 (RN-09)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias [409 Conflict, 880B, 332ms]
+  √  HTTP 409
+  √  Problem Details con codigo CATEGORIA_DUPLICADA
+
+└ Renombrar categoría (RF-16)
+  PATCH https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias/040dfb57-77cf-4a8a-9c3e-550b5aaec888 [200 OK, 866B, 387ms]
+  √  HTTP 200
+  √  Nuevo nombre
+
+└ Renombrar predeterminada -> 422
+  PATCH https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias/1c8868ac-9b89-4c04-a680-661c131c1165 [422 Unprocessable Entity, 961B, 290ms]
+  √  HTTP 422
+  √  Problem Details con codigo CATEGORIA_PREDETERMINADA
+
+□ 3. Movimientos
+└ Registrar ingreso (RF-10)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos [201 Created, 1.02kB, 915ms]
+  √  HTTP 201
+
+└ Registrar gasto (RF-09)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos [201 Created, 1.06kB, 632ms]
+  √  HTTP 201
+  √  Monto exacto
+
+└ Gasto con categoría de ingreso -> 422 (RN-03)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos [422 Unprocessable Entity, 911B, 400ms]
+  √  HTTP 422
+  √  Problem Details con codigo CATEGORIA_TIPO
+
+└ Monto con 3 decimales -> 422 (RN-01)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos [422 Unprocessable Entity, 902B, 397ms]
+  √  HTTP 422
+  √  Problem Details con codigo MONTO_DECIMALES
+
+└ Fecha futura -> 422 (RN-02)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos [422 Unprocessable Entity, 887B, 325ms]
+  √  HTTP 422
+  √  Problem Details con codigo FECHA_FUTURA
+
+└ Modificar gasto (RF-12)
+  PUT https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos/d3f31e6b-cbc1-4018-ac8a-031575067e74 [200 OK, 1.04kB, 499ms]
+  √  HTTP 200
+  √  Cambió de categoría
+
+□ 4. Consultas
+└ Historial del mes (RF-21)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos [200 OK, 1.37kB, 462ms]
+  √  HTTP 200
+  √  Paginado de 20
+  √  Dos movimientos
+
+└ Historial filtrado por tipo (RF-22)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos?tipo=GASTO [200 OK, 1.1kB, 377ms]
+  √  HTTP 200
+  √  Solo gastos
+
+└ Buscar en el historial por texto (RF-22)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos?texto=CAF%C3%89 [200 OK, 1.1kB, 459ms]
+  √  HTTP 200
+  √  Cada resultado contiene el texto (sin importar mayúsculas)
+
+└ Rango inválido -> 400 (RN-13)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos?desde=2026-12-31&hasta=2026-01-01 [400 Bad Request, 893B, 198ms]
+  √  HTTP 400
+  √  Problem Details con codigo RANGO_INVALIDO
+
+└ Resumen del mes (RF-23, RF-24)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/resumen [200 OK, 1.56kB, 1145ms]
+  √  HTTP 200
+  √  Balance = ingresos - gastos
+  √  Porcentajes suman 100
+  √  Tendencia por semanas que suma el total de gastos
+  √  Promedio diario de gastos
+
+└ Sin token -> 401 (RNF-01)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos [401 Unauthorized, 850B, 220ms]
+  √  HTTP 401
+  √  Problem Details con codigo NO_AUTENTICADO
+
+□ 5. Presupuestos
+└ Definir presupuesto (RF-18)
+  PUT https://finanzas-personales-lovat-eight.vercel.app/api/v1/presupuestos [200 OK, 1.02kB, 569ms]
+  √  HTTP 200
+  √  98 % = ALERTA (RN-11)
+
+└ Listar presupuestos del mes (RF-19)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/presupuestos?periodo=2026-11 [200 OK, 1.02kB, 409ms]
+  √  HTTP 200
+  √  Uno
+
+└ Presupuesto para categoría de ingreso -> 422 (RN-10)
+  PUT https://finanzas-personales-lovat-eight.vercel.app/api/v1/presupuestos [422 Unprocessable Entity, 918B, 373ms]
+  √  HTTP 422
+  √  Problem Details con codigo PRESUPUESTO_TIPO
+
+□ 6. Eliminar categoría y movimiento
+└ Eliminar categoría con movimientos sin destino -> 422 (HU-12)
+  DELETE https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias/040dfb57-77cf-4a8a-9c3e-550b5aaec888 [422 Unprocessable Entity, 978B, 349ms]
+  √  HTTP 422
+  √  Problem Details con codigo DESTINO_OBLIGATORIO
+
+└ Eliminar categoría reasignando (RF-17)
+  DELETE https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias/040dfb57-77cf-4a8a-9c3e-550b5aaec888?destino=1c8868ac-9b89-4c04-a680-661c131c1165 [204 No Content, 646B, 777ms]
+  √  HTTP 204
+
+└ El movimiento pasó a Alimentación
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos/d3f31e6b-cbc1-4018-ac8a-031575067e74 [200 OK, 1.06kB, 419ms]
+  √  HTTP 200
+  √  Reasignado
+
+└ Eliminar movimiento (RF-13)
+  DELETE https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos/d3f31e6b-cbc1-4018-ac8a-031575067e74 [204 No Content, 646B, 712ms]
+  √  HTTP 204
+
+└ Movimiento eliminado -> 404
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/movimientos/d3f31e6b-cbc1-4018-ac8a-031575067e74 [404 Not Found, 917B, 320ms]
+  √  HTTP 404
+
+□ 7. Cuenta
+└ Ver mi cuenta (RF-26)
+  GET https://finanzas-personales-lovat-eight.vercel.app/api/v1/cuenta [200 OK, 896B, 505ms]
+  √  HTTP 200
+  √  Correo en minúsculas
+
+└ Actualizar nombre (RF-26, HU-21)
+  PATCH https://finanzas-personales-lovat-eight.vercel.app/api/v1/cuenta [200 OK, 903B, 437ms]
+  √  HTTP 200
+  √  Nombre nuevo
+
+└ Cambiar contraseña con la actual mal -> 422 (HU-22)
+  PUT https://finanzas-personales-lovat-eight.vercel.app/api/v1/cuenta/contrasena [422 Unprocessable Entity, 917B, 2.1s]
+  √  HTTP 422
+  √  Problem Details con codigo CONTRASENA_ACTUAL_INCORRECTA
+
+└ Cambiar contraseña (RF-27)
+  PUT https://finanzas-personales-lovat-eight.vercel.app/api/v1/cuenta/contrasena [200 OK, 1.17kB, 4.5s]
+  √  HTTP 200
+
+└ Recuperación con correo inexistente -> 202 igual (HU-05)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/recuperacion [202 Accepted, 663B, 260ms]
+  √  HTTP 202
+
+└ Cerrar sesión (RF-06)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/logout [204 No Content, 775B, 262ms]
+  √  HTTP 204
+
+└ Renovar tras cerrar sesión -> 401 (HU-04)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/renovar [401 Unauthorized, 880B, 223ms]
+  √  HTTP 401
+
+└ Login con la nueva contraseña
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/login [200 OK, 1.17kB, 2.2s]
+  √  HTTP 200
+
+└ Eliminar mi cuenta (RF-25, HU-20)
+  DELETE https://finanzas-personales-lovat-eight.vercel.app/api/v1/cuenta [204 No Content, 775B, 398ms]
+  √  HTTP 204
+
+└ Login tras eliminar -> 401 (HU-20)
+  POST https://finanzas-personales-lovat-eight.vercel.app/api/v1/auth/login [401 Unauthorized, 884B, 242ms]
+  √  HTTP 401
+
+┌─────────────────────────┬─────────────────────┬─────────────────────┐
+│                         │            executed │              failed │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│              iterations │                   1 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│                requests │                  44 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│            test-scripts │                  44 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│      prerequest-scripts │                  45 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│              assertions │                  82 │                   0 │
+├─────────────────────────┴─────────────────────┴─────────────────────┤
+│ total run duration: 46.2s                                           │
+├─────────────────────────────────────────────────────────────────────┤
+│ total data received: 10.98kB (approx)                               │
+├─────────────────────────────────────────────────────────────────────┤
+│ average response time: 970ms [min: 198ms, max: 12.1s, s.d.: 1883ms] │
+└─────────────────────────────────────────────────────────────────────┘

@@ -1,0 +1,18 @@
+# 2026-11-17T18:07:45-05:00 mongosh 2.14.1 contra mongodb://localhost:27017/finanzas
+9.0.4
+## base-de-datos/01_colecciones.js
+ok: usuarios
+ok: categorias
+ok: movimientos
+ok: presupuestos
+ok: sesiones
+ok: tokens_recuperacion
+exit=0
+## base-de-datos/02_indices.js
+índices creados
+exit=0
+## base-de-datos/03_categorias_predeterminadas.js
+categorías predeterminadas: 14
+exit=0
+## base-de-datos/04_consultas_de_ejemplo.js
+exit=0

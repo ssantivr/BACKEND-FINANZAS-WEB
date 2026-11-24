@@ -1,0 +1,150 @@
+@startuml LOG-02
+title LOG-02 Aplicación y puertos (corregido)
+skinparam classAttributeIconSize 0
+interface IAutenticacion {
+ + registrar(cmd : RegistroCmd) : UsuarioDTO
+ + iniciarSesion(correo : String, clave : String) : TokensDTO
+ + renovarSesion(refreshToken : String) : TokensDTO
+ + cerrarSesion(refreshToken : String) : void
+ + solicitarRecuperacion(correo : String) : void
+ + restablecerContrasena(token : String, nuevaClave : String) : void
+}
+interface IGestionMovimientos {
+ + registrarGasto(cmd : RegistrarGastoCmd) : MovimientoDTO
+ + registrarIngreso(cmd : RegistrarIngresoCmd) : MovimientoDTO
+ + modificar(idUsuario : UUID, idMovimiento : UUID, cmd : ModificarMovimientoCmd) : MovimientoDTO
+ + eliminar(idUsuario : UUID, idMovimiento : UUID) : void
+}
+interface IGestionCategorias {
+ + listarDisponibles(idUsuario : UUID, tipo : TipoMovimiento) : List<CategoriaDTO>
+ + crear(idUsuario : UUID, nombre : String, tipo : TipoMovimiento) : CategoriaDTO
+ + renombrar(idUsuario : UUID, idCategoria : UUID, nombre : String) : CategoriaDTO
+ + eliminar(idUsuario : UUID, idCategoria : UUID, idCategoriaDestino : UUID) : void
+}
+interface IGestionPresupuestos {
+ + definir(idUsuario : UUID, idCategoria : UUID, periodo : YearMonth, limite : Dinero) : PresupuestoDTO
+ + listar(idUsuario : UUID, periodo : YearMonth) : List<PresupuestoDTO>
+}
+interface IConsultaFinanciera {
+ + consultarHistorial(idUsuario : UUID, filtro : FiltroMovimientos, pagina : int, tamano : int) : Pagina<MovimientoDTO>
+ + obtenerMovimiento(idUsuario : UUID, idMovimiento : UUID) : MovimientoDTO
+ + obtenerResumen(idUsuario : UUID, desde : LocalDate, hasta : LocalDate) : ResumenFinanciero
+}
+interface IEvaluadorPresupuesto {
+ + evaluar(gasto : Gasto) : void
+}
+interface IRepositorioUsuarios {
+ + guardar(u : Usuario) : void
+ + buscarPorId(id : UUID) : Optional<Usuario>
+ + buscarPorCorreo(correo : Email) : Optional<Usuario>
+ + existeCorreo(correo : Email) : boolean
+}
+interface IRepositorioMovimientos {
+ + guardar(m : Movimiento) : void
+ + eliminar(m : Movimiento) : void
+ + buscarDeUsuario(idUsuario : UUID, id : UUID) : Optional<Movimiento>
+ + buscar(idUsuario : UUID, filtro : FiltroMovimientos, pagina : int, tamano : int) : Pagina<Movimiento>
+ + sumarPorCategoria(idUsuario : UUID, desde : LocalDate, hasta : LocalDate) : List<TotalPorCategoria>
+ + sumarGastos(idUsuario : UUID, idCategoria : UUID, periodo : YearMonth) : Dinero
+ + reasignarCategoria(idUsuario : UUID, origen : UUID, destino : UUID) : int
+}
+interface IRepositorioCategorias {
+ + guardar(c : Categoria) : void
+ + eliminar(c : Categoria) : void
+ + buscarDisponible(id : UUID, idUsuario : UUID) : Optional<Categoria>
+ + listarDisponibles(idUsuario : UUID, tipo : TipoMovimiento) : List<Categoria>
+}
+interface IRepositorioPresupuestos {
+ + guardar(p : Presupuesto) : void
+ + eliminar(p : Presupuesto) : void
+ + buscar(idUsuario : UUID, idCategoria : UUID, periodo : YearMonth) : Optional<Presupuesto>
+ + buscarPorPeriodo(idUsuario : UUID, periodo : YearMonth) : List<Presupuesto>
+}
+interface ICifradorContrasena {
+ + cifrar(clave : String) : String
+ + coincide(clave : String, hash : String) : boolean
+}
+interface IEmisorTokens {
+ + emitir(u : Usuario) : TokensDTO
+ + validarRefresh(token : String) : UUID
+ + revocar(token : String) : void
+}
+interface INotificador {
+ + enviarRecuperacion(correo : Email, enlace : String) : void
+ + enviarAlertaPresupuesto(correo : Email, p : PresupuestoDTO) : void
+}
+class ServicioAutenticacion <<service>>
+class ServicioMovimientos <<service>>
+class ServicioCategorias <<service>>
+class ServicioPresupuestos <<service>>
+class ServicioConsultaFinanciera <<service>>
+class ResumenFinanciero <<dto>> {
+ desde, hasta : LocalDate
+ totalIngresos, totalGastos, balance : Dinero
+}
+class TotalPorCategoria <<dto>> {
+ total : Dinero
+ porcentaje : BigDecimal
+}
+class PresupuestoDTO <<dto>>
+class CategoriaDTO <<dto>>
+class ReglaNegocioException <<exception>>
+class CategoriaNoDisponibleException <<exception>>
+class RangoInvalidoException <<exception>>
+class CredencialesInvalidasException <<exception>>
+class CuentaBloqueadaException <<exception>>
+ServicioAutenticacion ..|> IAutenticacion
+ServicioMovimientos ..|> IGestionMovimientos
+ServicioCategorias ..|> IGestionCategorias
+ServicioPresupuestos ..|> IGestionPresupuestos
+ServicioPresupuestos ..|> IEvaluadorPresupuesto
+ServicioConsultaFinanciera ..|> IConsultaFinanciera
+ServicioAutenticacion --> IRepositorioUsuarios
+ServicioAutenticacion --> ICifradorContrasena
+ServicioAutenticacion --> IEmisorTokens
+ServicioAutenticacion --> INotificador
+ServicioMovimientos --> IRepositorioMovimientos
+ServicioMovimientos --> IRepositorioCategorias
+ServicioMovimientos --> IEvaluadorPresupuesto
+ServicioCategorias --> IRepositorioCategorias
+ServicioCategorias --> IRepositorioMovimientos
+ServicioPresupuestos --> IRepositorioPresupuestos
+ServicioPresupuestos --> IRepositorioMovimientos
+ServicioPresupuestos --> INotificador
+ServicioConsultaFinanciera --> IRepositorioMovimientos
+ServicioConsultaFinanciera --> IRepositorioPresupuestos
+ResumenFinanciero *-- "0..*" TotalPorCategoria
+ResumenFinanciero o-- "0..*" PresupuestoDTO : presupuestos
+TotalPorCategoria "0..*" --> "1" CategoriaDTO
+CategoriaNoDisponibleException --|> ReglaNegocioException
+RangoInvalidoException --|> ReglaNegocioException
+CredencialesInvalidasException --|> ReglaNegocioException
+CuentaBloqueadaException --|> ReglaNegocioException
+note right of IGestionPresupuestos
+  Sin eliminar (D-3a): no hay RF, HU ni DELETE.
+  Desactivar = redefinir con definir.
+end note
+note right of IConsultaFinanciera
+  obtenerMovimiento se mantiene: RF pendiente
+  (falta RF y GET /api/v1/movimientos/{id})
+end note
+note right of IEvaluadorPresupuesto
+  evaluar se invoca desde registrar, modificar y eliminar
+end note
+note bottom of CategoriaNoDisponibleException
+  Excepción de aplicación; HTTP 422
+end note
+note bottom of RangoInvalidoException
+  ⚠ inventada — NO VERIFICADO
+end note
+note bottom of CredencialesInvalidasException
+  ⚠ inventada — NO VERIFICADO
+end note
+note bottom of CuentaBloqueadaException
+  ⚠ inventada — NO VERIFICADO
+end note
+note bottom of ReglaNegocioException
+  Superclase tomada de VISTA_DESARROLLO (DEV-01); jerarquía NO VERIFICADO
+end note
+footer Corregido en ai/redesign — render NO VERIFICADO
+@enduml

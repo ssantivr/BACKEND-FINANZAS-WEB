@@ -1,0 +1,28 @@
+
+> finanzas-web@1.0.0 build
+> tsc --noEmit && vite build
+
+[36mvite v7.3.8 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 69 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                 [39m[1m[2m  1.65 kB[22m[1m[22m[2m │ gzip:  0.81 kB[22m
+[2mdist/[22m[35massets/index-C-i98xhH.css  [39m[1m[2m 33.25 kB[22m[1m[22m[2m │ gzip:  7.21 kB[22m
+[2mdist/[22m[36massets/index-uiUZ9tMj.js   [39m[1m[2m251.49 kB[22m[1m[22m[2m │ gzip: 78.74 kB[22m
+[32m✓ built in 2.34s[39m
+
+> finanzas-web@1.0.0 test
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/LENOVO/Downloads/02 - DOCUMENTOS/04- DISEÑO DE SOFTWARE/PROYECTO FINAL DISEÑO/frontend[39m
+
+ [32m✓[39m src/components/formato.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/features/movimientos/validacion.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m17 passed[39m[22m[90m (17)[39m
+[2m   Start at [22m 09:36:40
+[2m   Duration [22m 865ms[2m (transform 82ms, setup 0ms, collect 216ms, tests 20ms, environment 1ms, prepare 367ms)[22m
+

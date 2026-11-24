@@ -23,7 +23,7 @@ Las referencias entre colecciones son por `_id` (UUID en texto). No se guardan c
 | `02_indices.js` | Crea los índices, incluidos los TTL que borran sesiones y enlaces vencidos |
 | `03_categorias_predeterminadas.js` | Carga las 14 categorías predeterminadas (RF-14) |
 | `04_consultas_de_ejemplo.js` | Las consultas del historial, el resumen y el presupuesto, para probarlas a mano |
-| `05_datos_demo.mjs` | Solo en local: crea por la API una cuenta demo con 18 movimientos, 2 categorías propias y 4 presupuestos |
+| `05_datos_demo.mjs` | Crea por la API una cuenta demo con 18 movimientos, 2 categorías propias y 4 presupuestos; admite servidores locales y publicados |
 
 ```bash
 mongosh "mongodb+srv://USUARIO:CLAVE@CLUSTER.mongodb.net/finanzas" base-de-datos/01_colecciones.js
@@ -49,6 +49,20 @@ node base-de-datos/05_datos_demo.mjs
 - `05_datos_demo.mjs` necesita la API encendida en `http://localhost:8080`. La cuenta demo (`demo@pulsofinance.local`) y su contraseña de prueba están al inicio del script. Es solo para tu equipo.
 - Para ver los datos en **Compass**: *New connection* → `mongodb://localhost:27017` → base `finanzas`.
 
+## Cuenta demo publicada
+
+- Cuenta: `[DEMO_EMAIL_REDACTED]`
+- Contraseña: `[REDACTED]`
+- Sitio: https://finanzas-personales-lovat-eight.vercel.app
+
+Para recrear o completar sus datos:
+
+```bash
+set "DEMO_CORREO=[DEMO_EMAIL_REDACTED]"
+set "DEMO_CLAVE=[REDACTED]"
+node base-de-datos/05_datos_demo.mjs https://backend-finanzas-web.onrender.com/api/v1
+```
+
 ## Crear la base en MongoDB Atlas
 
 1. En [cloud.mongodb.com](https://cloud.mongodb.com) crea un clúster **M0 (gratis)**.
@@ -64,5 +78,3 @@ node base-de-datos/05_datos_demo.mjs
 - La colección de Postman pasó completa contra la API conectada a ese MongoDB, con la validación `$jsonSchema` activa: `docs/evidencias/pruebas/postman-newman.log`.
 - Datos demo y documentos de muestra: `docs/evidencias/pruebas/datos-demo.log`, `mongodb-conteos.log`, `mongodb-datos-demo.log`.
 - Atlas **NO VERIFICADO**: falta crear el clúster.
-
-> En este repositorio público no se incluye `05_datos_demo.mjs`, porque guarda la contraseña de la cuenta demo. Está en el repositorio del proyecto completo.

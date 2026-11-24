@@ -1,0 +1,71 @@
+@startuml DEV-02
+title DEV-02 Componentes (finanzas-api)
+left to right direction
+component "Cliente Web" <<subsystem>> as WEB
+package "finanzas-api" <<subsystem>> {
+  component "API REST" as API
+  component "Identidad" as ID
+  component "Movimientos" as MOV
+  component "Categorías" as CAT
+  component "Presupuestos" as PRE
+  component "Consultas" as CON
+  component "Persistencia" as PER
+  component "Seguridad" as SEG
+  component "Notificaciones" as NOT
+  package dominio
+}
+interface "API REST (OpenAPI 3, /api/v1)" as IAPI
+interface IAutenticacion
+interface IGestionMovimientos
+interface IGestionCategorias
+interface "IGestionPresupuestos\n+ definir\n+ listar" as IGP
+interface IEvaluadorPresupuesto
+interface IConsultaFinanciera
+interface "IRepositorio{Usuarios,Movimientos,Categorias,Presupuestos}" as IREP
+interface ICifradorContrasena
+interface IEmisorTokens
+interface INotificador
+API -- IAPI
+WEB ..> IAPI
+ID -- IAutenticacion
+MOV -- IGestionMovimientos
+CAT -- IGestionCategorias
+PRE -- IGP
+PRE -- IEvaluadorPresupuesto
+CON -- IConsultaFinanciera
+PER -- IREP
+SEG -- ICifradorContrasena
+SEG -- IEmisorTokens
+NOT -- INotificador
+API ..> IAutenticacion
+API ..> IGestionMovimientos
+API ..> IGestionCategorias
+API ..> IGP
+API ..> IConsultaFinanciera
+ID ..> IREP
+ID ..> ICifradorContrasena
+ID ..> IEmisorTokens
+ID ..> INotificador
+MOV ..> IREP
+MOV ..> IEvaluadorPresupuesto
+CAT ..> IREP
+PRE ..> IREP
+PRE ..> INotificador
+CON ..> IREP
+ID ..> dominio : <<use>>
+MOV ..> dominio : <<use>>
+CAT ..> dominio : <<use>>
+PRE ..> dominio : <<use>>
+CON ..> dominio : <<use>>
+database "PostgreSQL (JDBC)" as DB
+cloud "SMTP (externo)" as SMTP
+PER ..> DB
+NOT ..> SMTP
+note bottom of IGP
+  Sin eliminar (D-3a).
+end note
+note as NR
+  ⚠ reconstruido desde el texto de la vista; comparar con el PNG original
+end note
+footer Corregido en ai/redesign — render NO VERIFICADO
+@enduml

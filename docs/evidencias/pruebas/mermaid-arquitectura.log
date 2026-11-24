@@ -1,0 +1,46 @@
+# Validación Mermaid (2026-11-22) con mermaid@11.4.1 + jsdom (mermaid.parse): docs/arquitectura y docs/evidencias/diagramas
+file correcciones-vpp.md blocks 1
+OK  #1 class
+file vista-desarrollo.md blocks 1
+OK  #1 flowchart-v2
+file vista-despliegue.md blocks 2
+OK  #1 flowchart-v2
+OK  #2 flowchart-v2
+file vista-funcional.md blocks 3
+OK  #1 flowchart-v2
+OK  #2 sequence
+OK  #3 sequence
+file vista-logica.md blocks 4
+OK  #1 class
+OK  #2 class
+OK  #3 class
+OK  #4 er
+file ACT-01_Registrar_movimiento.md blocks 1
+OK  #1 flowchart-v2
+file ACT-02_Modificar_eliminar_movimiento.md blocks 1
+OK  #1 flowchart-v2
+file ACT-03_Iniciar_sesion.md blocks 1
+OK  #1 flowchart-v2
+file CAMBIOS_PENDIENTES_ORIGINALES.md blocks 0
+file DEV-01_Modulos_y_clases.md blocks 0
+file ER.md blocks 1
+OK  #1 er
+file FUN-01_Casos_de_uso.md blocks 1
+OK  #1 flowchart-v2
+file IMP-01_ER_MongoDB.md blocks 1
+OK  #1 er
+file IMP-02_Componentes_hexagonal.md blocks 1
+OK  #1 flowchart-v2
+file IMP-03_Despliegue.md blocks 1
+OK  #1 flowchart-v2
+file IMP-04_SEQ_Buscar_historial.md blocks 1
+OK  #1 sequence
+file IMP-05_SEQ_Renovar_sesion.md blocks 1
+OK  #1 sequence
+file SEQ-01_Registrar_gasto.md blocks 1
+OK  #1 sequence
+file SEQ-02_Consultar_resumen.md blocks 1
+OK  #1 sequence
+file SEQ-03_Iniciar_sesion.md blocks 1
+OK  #1 sequence
+EXIT 0

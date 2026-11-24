@@ -1,0 +1,123 @@
+@startuml LOG-01
+title LOG-01 Dominio (corregido)
+skinparam classAttributeIconSize 0
+enum TipoMovimiento {
+ INGRESO
+ GASTO
+}
+enum MetodoPago {
+ EFECTIVO
+ TARJETA_DEBITO
+ TARJETA_CREDITO
+ TRANSFERENCIA
+ OTRO
+}
+enum EstadoCuenta {
+ ACTIVA
+ ELIMINADA
+}
+enum EstadoPresupuesto {
+ OK
+ ALERTA
+ EXCEDIDO
+}
+class Usuario <<entity>> {
+ - id : UUID {readOnly}
+ - nombre : String
+ - hashContrasena : String
+ - estado : EstadoCuenta
+ - intentosFallidos : int
+ - bloqueadoHasta : LocalDateTime [0..1]
+ - fechaRegistro : LocalDateTime {readOnly}
+ - eliminadaEn : LocalDateTime [0..1]
+ / bloqueada : boolean
+ + cambiarContrasena(nuevoHash : String) : void
+ + registrarIntentoFallido(ahora : LocalDateTime) : void
+ + reiniciarIntentos() : void
+ + estaBloqueado(ahora : LocalDateTime) : boolean
+}
+abstract class Movimiento <<entity>> {
+ # id : UUID {readOnly}
+ # idUsuario : UUID {readOnly}
+ # fecha : LocalDate
+ # descripcion : String [0..1]
+ # fechaRegistro : LocalDateTime {readOnly}
+ + {abstract} getTipo() : TipoMovimiento
+ + getSigno() : int
+ + modificar(monto : Dinero, fecha : LocalDate, descripcion : String, categoria : Categoria) : void
+ + perteneceA(idUsuario : UUID) : boolean
+ # validar() : void
+}
+class Gasto <<entity>> {
+ - metodoPago : MetodoPago
+ + getTipo() : TipoMovimiento
+}
+class Ingreso <<entity>> {
+ - fuente : String [0..1]
+ + getTipo() : TipoMovimiento
+}
+class Categoria <<entity>> {
+ - id : UUID {readOnly}
+ - nombre : String
+ - tipo : TipoMovimiento {readOnly}
+ - icono : String [0..1]
+ - idPropietario : UUID [0..1]
+ + esPredeterminada() : boolean
+ + estaDisponiblePara(idUsuario : UUID) : boolean
+ + renombrar(nombre : String) : void
+}
+class Presupuesto <<entity>> {
+ - id : UUID {readOnly}
+ - idUsuario : UUID {readOnly}
+ - periodo : YearMonth
+ - notificado : boolean
+ + calcularEstado(consumo : Dinero) : EstadoPresupuesto
+ + debeNotificar(consumo : Dinero) : boolean
+ + marcarNotificado() : void
+ + cambiarLimite(limite : Dinero) : void
+}
+class Dinero <<value object>> {
+ - cantidad : BigDecimal {readOnly}
+ - moneda : Currency {readOnly}
+ + sumar(otro : Dinero) : Dinero
+ + restar(otro : Dinero) : Dinero
+ + porcentajeDe(total : Dinero) : BigDecimal
+ + esPositivo() : boolean
+ + {static} cero(moneda : Currency) : Dinero
+}
+class Email <<value object>> {
+ - valor : String {readOnly}
+ + getValor() : String
+}
+Gasto --|> Movimiento
+Ingreso --|> Movimiento
+Usuario "1" -- "0..*" Movimiento : movimientos
+Usuario "0..1" -- "0..*" Categoria : categoriasPersonalizadas
+Usuario "1" -- "0..*" Presupuesto : presupuestos
+Movimiento "0..*" --> "1" Categoria : categoria
+Presupuesto "0..*" --> "1" Categoria : categoria
+Movimiento *-- "1" Dinero : monto
+Presupuesto *-- "1" Dinero : limite
+Usuario *-- "1" Email : correo
+Movimiento ..> TipoMovimiento : <<use>>
+note top of Usuario
+  R3-R5 corregidas (D-1): asociaciones con borrado restringido
+  (borrado lógico con eliminadaEn), ya no composiciones en cascada.
+  /bloqueada se deriva de bloqueadoHasta (BLOQUEADA ya no es estado).
+end note
+note bottom of Movimiento
+  OCL RN-01: context Movimiento inv: self.monto.esPositivo()
+  OCL RN-01: context Movimiento inv: self.monto.cantidad <= 999999999999.99
+  OCL RN-02: context Movimiento inv: self.fecha <= LocalDate.now()  (NO VERIFICADO: texto exacto de RN-02)
+  OCL RN-03: context Movimiento inv: self.categoria.tipo = self.getTipo()
+  {complete, disjoint} sobre Gasto/Ingreso
+end note
+note bottom of Presupuesto
+  OCL RN-10: context Presupuesto inv: self.categoria.tipo = TipoMovimiento::GASTO
+end note
+note as NA
+  Sin atributos duplicados: categoria, correo, limite y monto
+  se muestran solo como asociaciones (R6-R10).
+end note
+footer Corregido en ai/redesign — render NO VERIFICADO
+@enduml

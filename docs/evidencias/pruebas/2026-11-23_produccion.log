@@ -1,0 +1,20 @@
+# Auditoria de produccion 2026-11-23T20:38:13-05:00
+backend repo HEAD 1f58eb8d7a792e463b5101911dc45e4eaf2563ed	HEAD
+frontend repo HEAD 41b4cc2afcc8e3ffed174ded986fb93651a92238	HEAD
+200 1.177040s https://github.com/ssantivr/FRONTEND-FINANZAS-WEB
+200 1.051954s https://github.com/ssantivr/BACKEND-FINANZAS-WEB
+200 0.379588s https://finanzas-personales-lovat-eight.vercel.app/
+200 0.387734s https://finanzas-personales-lovat-eight.vercel.app/movimientos
+<title>PulsoFinance · Finanzas Personales</title>
+000 120.012093s https://backend-finanzas-web.onrender.com/actuator/health (curl exit: 28)
+000 120.003042s https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias (curl exit: 28)
+
+# Segunda auditoria tras corregir MONGODB_URI en Render 2026-11-23T21:38:34-05:00
+Log de Render (deploy 1f58eb8, 21:33): 'bad auth : authentication failed' en los despliegues anteriores; tras actualizar MONGODB_URI:
+2026-11-24T02:36:04Z Started FinanzasApplication in 105.998 seconds
+2026-11-24T02:36:13Z InicializadorCategorias: Categorias predeterminadas creadas o actualizadas
+Render: Your service is live
+{"status":"UP","groups":["liveness","readiness"]}  -> 200 0.715937s https://backend-finanzas-web.onrender.com/actuator/health
+401 0.532497s https://finanzas-personales-lovat-eight.vercel.app/api/v1/categorias (401 esperado: llega a la API por la reescritura)
+newman produccion: ver 2026-11-23_newman-produccion.log (44 peticiones, 82 aserciones, 0 fallos)
+Playwright produccion: ver 2026-11-23_e2e-produccion.log (12 passed)

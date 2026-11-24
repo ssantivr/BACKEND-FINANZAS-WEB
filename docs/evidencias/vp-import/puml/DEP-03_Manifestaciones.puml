@@ -1,0 +1,51 @@
+@startuml DEP-03
+title DEP-03 Manifestaciones (artefacto -> componente)
+left to right direction
+component "Cliente Web" as C1
+component "API REST" as C2
+component "Identidad" as C3
+component "Movimientos" as C4
+component "Categorías" as C5
+component "Presupuestos" as C6
+component "Consultas" as C7
+component "Persistencia" as C8
+component "Seguridad" as C9
+component "Notificaciones" as C10
+artifact "finanzas-web (dist/)" as A1
+artifact "finanzas-api.jar" as A2
+artifact "V1__esquema.sql" as A3
+artifact "finanzas.conf" as A4
+artifact "docker-compose.yml" as A5
+component "Esquema finanzas_db (Vista de Desarrollo 4.3)" <<schema>> as SCH
+A1 ..> C1 : <<manifest>>
+A2 ..> C2 : <<manifest>>
+A2 ..> C3 : <<manifest>>
+A2 ..> C4 : <<manifest>>
+A2 ..> C5 : <<manifest>>
+A2 ..> C6 : <<manifest>>
+A2 ..> C7 : <<manifest>>
+A2 ..> C8 : <<manifest>>
+A2 ..> C9 : <<manifest>>
+A2 ..> C10 : <<manifest>>
+A3 ..> SCH : <<manifest>>
+note bottom of A1
+  Desplegado en: nginx (servido) -> Navegador web (ejecutado)
+end note
+note bottom of A2
+  Desplegado en: contenedor api (un solo jar; monolito modular)
+end note
+note bottom of A3
+  Manifiesta el componente <<schema>> (no un artefacto). Ejecutado contra
+  PostgreSQL (produce finanzas_db); según V1__esquema.propuesta.sql
+end note
+note bottom of A4
+  Sin manifestación. Desplegado en: contenedor nginx
+end note
+note bottom of A5
+  Sin manifestación. Desplegado en: vm-app
+end note
+note as NR
+  ⚠ reconstruido desde el texto de la vista; comparar con el PNG original
+end note
+footer Corregido en ai/redesign — render NO VERIFICADO
+@enduml

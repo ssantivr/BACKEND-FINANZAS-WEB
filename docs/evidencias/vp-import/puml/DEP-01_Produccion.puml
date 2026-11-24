@@ -1,0 +1,56 @@
+@startuml DEP-01
+title DEP-01 Producción
+node "Dispositivo del usuario" <<device>> as USR {
+  node "Navegador web" <<executionEnvironment>> as NAV {
+    artifact "finanzas-web" as WEBA
+  }
+}
+node "vm-app" <<device>> as APP {
+  node "Docker Engine 27" <<executionEnvironment>> as DK {
+    node "nginx 1.27" <<container>> as NGX {
+      artifact "finanzas-web (dist/)" as WEBDIST
+      artifact "finanzas.conf" as CONF
+    }
+    node "api (Temurin JRE 21)" <<container>> as API {
+      artifact "finanzas-api.jar" as JAR
+    }
+  }
+  artifact "docker-compose.yml" as DC
+}
+node "vm-bd" <<device>> as BD {
+  node "PostgreSQL 16" <<executionEnvironment>> as PG {
+    artifact "finanzas_db" as DB
+  }
+  artifact "V1__esquema.sql" as MIG
+  artifact "respaldo.sh" as RESP
+}
+node "Servicio de correo" <<device>> as MAIL
+node "Almacenamiento de respaldos" <<device>> as S3 {
+  artifact "finanzas_db_AAAAMMDD.dump.age" as DUMP
+}
+NAV --> NGX : <<HTTPS>> 443
+NGX --> API : <<HTTP>> 8080
+API --> PG : <<JDBC/TLS>> 5432
+API --> MAIL : <<SMTP>> 587 STARTTLS
+BD --> S3 : <<HTTPS>> 443
+MIG ..> PG : ejecutado contra
+note bottom of MIG
+  Artefacto de migración según V1__esquema.propuesta.sql (PROPUESTA);
+  V2__categorias_predeterminadas.sql: ver nota de semilla (la propuesta
+  incluye el seed en V1; decisión NO VERIFICADO).
+  Según tabla 5.3 se ejecuta contra PostgreSQL, no dentro del contenedor api.
+end note
+note bottom of API
+  application-prod.yml: configuración del contenedor api
+  (⚠ NO listado en tabla 5.3; alinear)
+end note
+note as N2
+  Nombre unificado "Servicio de correo" (igual que CTX y FUN-01).
+  Artefactos según tabla 5.3: finanzas-web (dist/), finanzas-api.jar,
+  V1__esquema.sql, finanzas.conf, docker-compose.yml.
+  finanzas_db y respaldo.sh figuran en el texto 5.1 pero no en 5.3.
+  finanzas-web: tabla 5.3 dice "finanzas-web.zip"; aquí se modela como
+  la carpeta dist/ (HTML/JS/CSS) que sirve nginx, sin .zip.
+end note
+footer Corregido en ai/redesign — render NO VERIFICADO
+@enduml

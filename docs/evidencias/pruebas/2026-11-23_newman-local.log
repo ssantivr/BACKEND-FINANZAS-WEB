@@ -1,0 +1,246 @@
+(node:8196) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+newman
+
+Finanzas Personales API
+
+□ 1. Autenticación
+└ Registro (RF-01, HU-01)
+  POST http://localhost:8080/api/v1/auth/registro [201 Created, 872B, 1404ms]
+  √  HTTP 201
+  √  Devuelve access token
+  √  El refresh token no viaja en el cuerpo
+
+└ Registro duplicado -> 409 (RN-06)
+  POST http://localhost:8080/api/v1/auth/registro [409 Conflict, 597B, 36ms]
+  √  HTTP 409
+  √  Problem Details con codigo CORREO_DUPLICADO
+
+└ Registro con clave corta -> 400 (RN-07)
+  POST http://localhost:8080/api/v1/auth/registro [400 Bad Request, 586B, 10ms]
+  √  HTTP 400
+  √  Problem Details con codigo CLAVE_CORTA
+
+└ Login incorrecto -> 401 sin decir qué falló (HU-02)
+  POST http://localhost:8080/api/v1/auth/login [401 Unauthorized, 609B, 486ms]
+  √  HTTP 401
+  √  Mensaje genérico
+
+└ Login (RF-03)
+  POST http://localhost:8080/api/v1/auth/login [200 OK, 867B, 471ms]
+  √  HTTP 200
+  √  El refresh token no viaja en el cuerpo
+
+└ Renovar sin cabecera X-Requested-With -> 403 (CSRF)
+  POST http://localhost:8080/api/v1/auth/renovar [403 Forbidden, 639B, 16ms]
+  √  HTTP 403
+  √  Código ORIGEN_NO_PERMITIDO
+
+└ Renovar sesión con la cookie (RF-05)
+  POST http://localhost:8080/api/v1/auth/renovar [200 OK, 864B, 41ms]
+  √  HTTP 200
+
+□ 2. Categorías
+└ Categorías de gasto (RF-14)
+  GET http://localhost:8080/api/v1/categorias?tipo=GASTO [200 OK, 1.69kB, 108ms]
+  √  HTTP 200
+  √  Trae las predeterminadas
+  √  Cada categoría trae su color #rrggbb
+
+└ Categorías de ingreso
+  GET http://localhost:8080/api/v1/categorias?tipo=INGRESO [200 OK, 1.14kB, 13ms]
+  √  HTTP 200
+
+└ Crear categoría propia (RF-15)
+  POST http://localhost:8080/api/v1/categorias [201 Created, 546B, 27ms]
+  √  HTTP 201
+  √  No es predeterminada
+  √  Guarda el color elegido en minúsculas
+
+└ Color inválido -> 422 (COLOR_INVALIDO)
+  POST http://localhost:8080/api/v1/categorias [422 Unprocessable Entity (WebDAV) (RFC 4918), 643B, 9ms]
+  √  HTTP 422
+  √  Problem Details con codigo COLOR_INVALIDO
+
+└ Categoría duplicada -> 409 (RN-09)
+  POST http://localhost:8080/api/v1/categorias [409 Conflict, 605B, 44ms]
+  √  HTTP 409
+  √  Problem Details con codigo CATEGORIA_DUPLICADA
+
+└ Renombrar categoría (RF-16)
+  PATCH http://localhost:8080/api/v1/categorias/8df3dad4-e6fd-47be-bf02-7f8f647877dd [200 OK, 546B, 21ms]
+  √  HTTP 200
+  √  Nuevo nombre
+
+└ Renombrar predeterminada -> 422
+  PATCH http://localhost:8080/api/v1/categorias/1c8868ac-9b89-4c04-a680-661c131c1165 [422 Unprocessable Entity (WebDAV) (RFC 4918), 706B, 11ms]
+  √  HTTP 422
+  √  Problem Details con codigo CATEGORIA_PREDETERMINADA
+
+□ 3. Movimientos
+└ Registrar ingreso (RF-10)
+  POST http://localhost:8080/api/v1/movimientos [201 Created, 701B, 78ms]
+  √  HTTP 201
+
+└ Registrar gasto (RF-09)
+  POST http://localhost:8080/api/v1/movimientos [201 Created, 739B, 54ms]
+  √  HTTP 201
+  √  Monto exacto
+
+└ Gasto con categoría de ingreso -> 422 (RN-03)
+  POST http://localhost:8080/api/v1/movimientos [422 Unprocessable Entity (WebDAV) (RFC 4918), 656B, 11ms]
+  √  HTTP 422
+  √  Problem Details con codigo CATEGORIA_TIPO
+
+└ Monto con 3 decimales -> 422 (RN-01)
+  POST http://localhost:8080/api/v1/movimientos [422 Unprocessable Entity (WebDAV) (RFC 4918), 647B, 8ms]
+  √  HTTP 422
+  √  Problem Details con codigo MONTO_DECIMALES
+
+└ Fecha futura -> 422 (RN-02)
+  POST http://localhost:8080/api/v1/movimientos [422 Unprocessable Entity (WebDAV) (RFC 4918), 632B, 10ms]
+  √  HTTP 422
+  √  Problem Details con codigo FECHA_FUTURA
+
+└ Modificar gasto (RF-12)
+  PUT http://localhost:8080/api/v1/movimientos/329ee10b-3848-4d8f-9631-96842fc7113c [200 OK, 719B, 48ms]
+  √  HTTP 200
+  √  Cambió de categoría
+
+□ 4. Consultas
+└ Historial del mes (RF-21)
+  GET http://localhost:8080/api/v1/movimientos [200 OK, 1.05kB, 52ms]
+  √  HTTP 200
+  √  Paginado de 20
+  √  Dos movimientos
+
+└ Historial filtrado por tipo (RF-22)
+  GET http://localhost:8080/api/v1/movimientos?tipo=GASTO [200 OK, 777B, 47ms]
+  √  HTTP 200
+  √  Solo gastos
+
+└ Buscar en el historial por texto (RF-22)
+  GET http://localhost:8080/api/v1/movimientos?texto=CAF%C3%89 [200 OK, 777B, 60ms]
+  √  HTTP 200
+  √  Cada resultado contiene el texto (sin importar mayúsculas)
+
+└ Rango inválido -> 400 (RN-13)
+  GET http://localhost:8080/api/v1/movimientos?desde=2026-12-31&hasta=2026-01-01 [400 Bad Request, 589B, 12ms]
+  √  HTTP 400
+  √  Problem Details con codigo RANGO_INVALIDO
+
+└ Resumen del mes (RF-23, RF-24)
+  GET http://localhost:8080/api/v1/resumen [200 OK, 1.24kB, 110ms]
+  √  HTTP 200
+  √  Balance = ingresos - gastos
+  √  Porcentajes suman 100
+  √  Tendencia por semanas que suma el total de gastos
+  √  Promedio diario de gastos
+
+└ Sin token -> 401 (RNF-01)
+  GET http://localhost:8080/api/v1/movimientos [401 Unauthorized, 575B, 12ms]
+  √  HTTP 401
+  √  Problem Details con codigo NO_AUTENTICADO
+
+□ 5. Presupuestos
+└ Definir presupuesto (RF-18)
+  PUT http://localhost:8080/api/v1/presupuestos [200 OK, 696B, 58ms]
+  √  HTTP 200
+  √  98 % = ALERTA (RN-11)
+
+└ Listar presupuestos del mes (RF-19)
+  GET http://localhost:8080/api/v1/presupuestos?periodo=2026-11 [200 OK, 698B, 18ms]
+  √  HTTP 200
+  √  Uno
+
+└ Presupuesto para categoría de ingreso -> 422 (RN-10)
+  PUT http://localhost:8080/api/v1/presupuestos [422 Unprocessable Entity (WebDAV) (RFC 4918), 663B, 12ms]
+  √  HTTP 422
+  √  Problem Details con codigo PRESUPUESTO_TIPO
+
+□ 6. Eliminar categoría y movimiento
+└ Eliminar categoría con movimientos sin destino -> 422 (HU-12)
+  DELETE http://localhost:8080/api/v1/categorias/8df3dad4-e6fd-47be-bf02-7f8f647877dd [422 Unprocessable Entity (WebDAV) (RFC 4918), 723B, 14ms]
+  √  HTTP 422
+  √  Problem Details con codigo DESTINO_OBLIGATORIO
+
+└ Eliminar categoría reasignando (RF-17)
+  DELETE http://localhost:8080/api/v1/categorias/8df3dad4-e6fd-47be-bf02-7f8f647877dd?destino=1c8868ac-9b89-4c04-a680-661c131c1165 [204 No Content, 371B, 84ms]
+  √  HTTP 204
+
+└ El movimiento pasó a Alimentación
+  GET http://localhost:8080/api/v1/movimientos/329ee10b-3848-4d8f-9631-96842fc7113c [200 OK, 741B, 13ms]
+  √  HTTP 200
+  √  Reasignado
+
+└ Eliminar movimiento (RF-13)
+  DELETE http://localhost:8080/api/v1/movimientos/329ee10b-3848-4d8f-9631-96842fc7113c [204 No Content, 371B, 15ms]
+  √  HTTP 204
+
+└ Movimiento eliminado -> 404
+  GET http://localhost:8080/api/v1/movimientos/329ee10b-3848-4d8f-9631-96842fc7113c [404 Not Found, 620B, 10ms]
+  √  HTTP 404
+
+□ 7. Cuenta
+└ Ver mi cuenta (RF-26)
+  GET http://localhost:8080/api/v1/cuenta [200 OK, 576B, 11ms]
+  √  HTTP 200
+  √  Correo en minúsculas
+
+└ Actualizar nombre (RF-26, HU-21)
+  PATCH http://localhost:8080/api/v1/cuenta [200 OK, 583B, 15ms]
+  √  HTTP 200
+  √  Nombre nuevo
+
+└ Cambiar contraseña con la actual mal -> 422 (HU-22)
+  PUT http://localhost:8080/api/v1/cuenta/contrasena [422 Unprocessable Entity (WebDAV) (RFC 4918), 662B, 447ms]
+  √  HTTP 422
+  √  Problem Details con codigo CONTRASENA_ACTUAL_INCORRECTA
+
+└ Cambiar contraseña (RF-27)
+  PUT http://localhost:8080/api/v1/cuenta/contrasena [200 OK, 867B, 885ms]
+  √  HTTP 200
+
+└ Recuperación con correo inexistente -> 202 igual (HU-05)
+  POST http://localhost:8080/api/v1/auth/recuperacion [202 Accepted, 388B, 12ms]
+  √  HTTP 202
+
+└ Cerrar sesión (RF-06)
+  POST http://localhost:8080/api/v1/auth/logout [204 No Content, 492B, 10ms]
+  √  HTTP 204
+
+└ Renovar tras cerrar sesión -> 401 (HU-04)
+  POST http://localhost:8080/api/v1/auth/renovar [401 Unauthorized, 605B, 6ms]
+  √  HTTP 401
+
+└ Login con la nueva contraseña
+  POST http://localhost:8080/api/v1/auth/login [200 OK, 867B, 454ms]
+  √  HTTP 200
+
+└ Eliminar mi cuenta (RF-25, HU-20)
+  DELETE http://localhost:8080/api/v1/cuenta [204 No Content, 492B, 12ms]
+  √  HTTP 204
+
+└ Login tras eliminar -> 401 (HU-20)
+  POST http://localhost:8080/api/v1/auth/login [401 Unauthorized, 609B, 9ms]
+  √  HTTP 401
+
+┌─────────────────────────┬────────────────────┬────────────────────┐
+│                         │           executed │             failed │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              iterations │                  1 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│                requests │                 44 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│            test-scripts │                 44 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│      prerequest-scripts │                 45 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              assertions │                 82 │                  0 │
+├─────────────────────────┴────────────────────┴────────────────────┤
+│ total run duration: 8.9s                                          │
+├───────────────────────────────────────────────────────────────────┤
+│ total data received: 11.08kB (approx)                             │
+├───────────────────────────────────────────────────────────────────┤
+│ average response time: 120ms [min: 6ms, max: 1404ms, s.d.: 263ms] │
+└───────────────────────────────────────────────────────────────────┘

@@ -1,0 +1,80 @@
+@startuml FUN-02
+title FUN-02 Componentes funcionales e interfaces
+left to right direction
+actor Usuario as USR
+component "Cliente Web (TypeScript)" <<subsystem>> as WEB
+component "API REST (Java · Spring Boot)" as API
+component "Identidad" as ID
+component "Movimientos" as MOV
+component "Categorías" as CAT
+component "Presupuestos" as PRE
+component "Consultas" as CON
+component "Persistencia" as PER
+component "Seguridad" as SEG
+component "Notificaciones" as NOT
+interface "API REST /api/v1" as IAPI
+interface IAutenticacion
+interface IGestionMovimientos
+interface IGestionCategorias
+interface IGestionPresupuestos as IGP
+interface IEvaluadorPresupuesto
+interface IConsultaFinanciera
+interface IRepositorioUsuarios as IRU
+interface IRepositorioMovimientos as IRM
+interface IRepositorioCategorias as IRC
+interface IRepositorioPresupuestos as IRP
+interface ICifradorContrasena as ICC
+interface IEmisorTokens as IET
+interface INotificador as INO
+USR ..> WEB : <<use>>
+' provided interfaces (lollipop)
+API -- IAPI
+ID -- IAutenticacion
+MOV -- IGestionMovimientos
+CAT -- IGestionCategorias
+PRE -- IGP
+PRE -- IEvaluadorPresupuesto
+CON -- IConsultaFinanciera
+PER -- IRU
+PER -- IRM
+PER -- IRC
+PER -- IRP
+SEG -- ICC
+SEG -- IET
+NOT -- INO
+' required interfaces (socket); from LOG-02 service dependencies
+WEB ..> IAPI
+API ..> IAutenticacion
+API ..> IGestionMovimientos
+API ..> IGestionCategorias
+API ..> IGP
+API ..> IConsultaFinanciera
+ID ..> IRU
+ID ..> ICC
+ID ..> IET
+ID ..> INO
+MOV ..> IRM
+MOV ..> IRC
+MOV ..> IEvaluadorPresupuesto
+CAT ..> IRC
+CAT ..> IRM
+PRE ..> IRP
+PRE ..> IRM
+PRE ..> INO
+CON ..> IRM
+CON ..> IRP
+cloud "Servicio de correo (SMTP)" as MAIL
+database "PostgreSQL (JDBC)" as DB
+NOT ..> MAIL
+PER ..> DB
+note bottom of IGP
+  Sin eliminar (D-3a).
+end note
+note as NR
+  Estructura según el PNG original de VP (FUN-01 Componentes funcionales);
+  dependencias según LOG-02. Cambios: cada interfaz requerida tiene proveedor,
+  IGestionPresupuestos sin eliminar (D-3a).
+  ⚠ "TypeScript" / "Java · Spring Boot": etiquetas del original, stack NO VERIFICADO.
+end note
+footer Corregido en ai/redesign
+@enduml

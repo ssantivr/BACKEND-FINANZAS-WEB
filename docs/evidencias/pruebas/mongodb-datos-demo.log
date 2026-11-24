@@ -1,0 +1,86 @@
+== usuarios (demo, sin hash)
+{
+  _id: '7a50dd05-7424-4918-b28b-447a53665457',
+  correo: 'demo@pulsofinance.local',
+  nombre: 'Usuario Demo',
+  hashContrasena: '<oculto>',
+  estado: 'ACTIVA',
+  intentosFallidos: 0,
+  fechaRegistro: ISODate('2026-11-18T04:09:40.008Z'),
+  _class: 'co.finanzas.infraestructura.persistencia.UsuarioDocumento'
+}
+== categorias propias del demo
+{
+  _id: '2d242f4d-1cd8-4e62-8a38-cdf72899f07a',
+  nombre: 'Mascotas',
+  nombreClave: 'mascotas',
+  tipo: 'GASTO',
+  color: '#a855f7',
+  idPropietario: '7a50dd05-7424-4918-b28b-447a53665457',
+  _class: 'co.finanzas.infraestructura.persistencia.CategoriaDocumento'
+}
+{
+  _id: 'f075e942-ca96-4ad0-992d-346fe394a505',
+  nombre: 'Freelance',
+  nombreClave: 'freelance',
+  tipo: 'INGRESO',
+  color: '#0ea5e9',
+  idPropietario: '7a50dd05-7424-4918-b28b-447a53665457',
+  _class: 'co.finanzas.infraestructura.persistencia.CategoriaDocumento'
+}
+== un movimiento
+{
+  _id: 'e2342db0-3eef-4761-9d26-d33b7faf6a31',
+  idUsuario: '7a50dd05-7424-4918-b28b-447a53665457',
+  tipo: 'GASTO',
+  monto: Decimal128('159900.00'),
+  moneda: 'COP',
+  fecha: '2026-11-17',
+  descripcion: 'Chaqueta',
+  idCategoria: 'b0f172cd-4eb8-4e87-a6da-e475fea185cb',
+  metodoPago: 'TARJETA_CREDITO',
+  fechaRegistro: ISODate('2026-11-18T04:09:40.802Z'),
+  _class: 'co.finanzas.infraestructura.persistencia.MovimientoDocumento'
+}
+== presupuestos del demo
+{
+  _id: 'eb4344a0-5a9d-4f19-97c6-7f48e1dc145a',
+  idUsuario: '7a50dd05-7424-4918-b28b-447a53665457',
+  idCategoria: '13a77e6f-b534-438a-9e69-e7b8164e5bb7',
+  periodo: '2026-11',
+  limite: Decimal128('200000.00'),
+  moneda: 'COP',
+  notificado: false,
+  _class: 'co.finanzas.infraestructura.persistencia.PresupuestoDocumento'
+}
+{
+  _id: '5d3618c5-fff7-4c83-b49d-3d724be16a80',
+  idUsuario: '7a50dd05-7424-4918-b28b-447a53665457',
+  idCategoria: '1792c240-47cf-45c2-843f-09ca29df786b',
+  periodo: '2026-11',
+  limite: Decimal128('300000.00'),
+  moneda: 'COP',
+  notificado: false,
+  _class: 'co.finanzas.infraestructura.persistencia.PresupuestoDocumento'
+}
+{
+  _id: '63d2d5e4-8546-4b14-8989-d876cbfce58a',
+  idUsuario: '7a50dd05-7424-4918-b28b-447a53665457',
+  idCategoria: '1c8868ac-9b89-4c04-a680-661c131c1165',
+  periodo: '2026-11',
+  limite: Decimal128('600000.00'),
+  moneda: 'COP',
+  notificado: false,
+  _class: 'co.finanzas.infraestructura.persistencia.PresupuestoDocumento'
+}
+{
+  _id: 'fd673321-7cc3-457d-a6b7-316cdc07f079',
+  idUsuario: '7a50dd05-7424-4918-b28b-447a53665457',
+  idCategoria: 'fd75338b-1b48-4b24-aa73-e0db9f6f1304',
+  periodo: '2026-11',
+  limite: Decimal128('150000.00'),
+  moneda: 'COP',
+  notificado: false,
+  _class: 'co.finanzas.infraestructura.persistencia.PresupuestoDocumento'
+}
+== gasto por categoria (pipeline del API)

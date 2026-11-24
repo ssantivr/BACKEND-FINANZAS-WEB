@@ -1,0 +1,82 @@
+@startuml ACT-02_Modificar_eliminar_movimiento
+title ACT-02 Modificar o eliminar movimiento (CU-04)
+footer Corregido en ai/redesign — render NO VERIFICADO
+
+|Usuario|
+start
+:Abrir un movimiento desde Historial;
+if (¿Acción elegida?) then (modificar)
+  repeat
+    |Usuario|
+    :Editar monto, fecha, descripción o categoría;
+    |Cliente Web|
+    :PUT /api/v1/movimientos/id;
+    |API|
+    :Buscar movimiento del usuario;
+    if (¿Es del usuario?) then (no)
+      |Cliente Web|
+      :Mostrar movimiento no encontrado (404);
+    else (sí)
+      |API|
+      if (¿Reglas cumplidas?) then (no, 5a)
+        |Cliente Web|
+        :Mostrar errores de validación;
+      else (sí)
+        |API|
+        :Actualizar movimiento;
+        |Base de datos|
+        :UPDATE movimiento;
+        |API|
+        if (¿Es gasto?) then (sí)
+          :Reevaluar presupuesto del mes anterior;
+          :Reevaluar presupuesto del mes nuevo;
+          if (¿Excedido por primera vez?) then (sí)
+            :Reclamar notificado (atómico);
+            |Base de datos|
+            :UPDATE presupuesto SET notificado WHERE NOT notificado;
+            |API|
+            :Notificar excedido (solicitud asíncrona);
+            |Servicio de correo|
+            :Enviar correo de alerta;
+          else (no)
+          endif
+        else (no)
+        endif
+        |Cliente Web|
+        :Mostrar resultado y saldo actualizado;
+      endif
+    endif
+  repeat while (¿Errores de validación (5a)?) is (sí, volver a editar) not (no)
+else (eliminar)
+  |Cliente Web|
+  :Pedir confirmación;
+  |Usuario|
+  :Confirmar eliminación;
+  |Cliente Web|
+  :DELETE /api/v1/movimientos/id;
+  |API|
+  :Buscar movimiento del usuario;
+  if (¿Es del usuario?) then (no)
+    |Cliente Web|
+    :Mostrar movimiento no encontrado (404);
+  else (sí)
+    |API|
+    :Eliminar movimiento;
+    |Base de datos|
+    :DELETE movimiento;
+    |API|
+    if (¿Es gasto?) then (sí)
+      :Reevaluar presupuesto del mes del gasto eliminado;
+      note right
+        ⚠ NO VERIFICADO: inferencia, RF-13 no exige reevaluar al eliminar;
+        confirmar o quitar. Solo baja el consumo: no dispara alerta.
+      end note
+    else (no)
+    endif
+    |Cliente Web|
+    :Mostrar resultado y saldo actualizado;
+  endif
+endif
+|Usuario|
+stop
+@enduml

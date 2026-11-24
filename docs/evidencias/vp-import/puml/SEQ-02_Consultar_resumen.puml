@@ -1,0 +1,36 @@
+@startuml SEQ-02_Consultar_resumen
+title SEQ-02 Consultar resumen financiero (CU-08, incluye CU-11)
+footer Corregido en ai/redesign — render NO VERIFICADO
+skinparam sequenceMessageAlign left
+autonumber
+
+actor Usuario as U
+participant ClienteWeb as W
+participant ConsultaController as C
+participant ServicioConsultaFinanciera as S
+participant IRepositorioMovimientos as RM
+participant IRepositorioPresupuestos as RP
+
+U -> W : abrir Resumen y elegir periodo
+W -> C : GET /api/v1/resumen?desde&hasta + Bearer
+C -> C : idUsuario = token.sub
+note right of C : idUsuario sale solo de token.sub (RN-05 / RNF-02)
+C -> S : obtenerResumen(idUsuario, desde, hasta)
+alt desde > hasta o rango > 24 meses (RN-13)
+  S --> C : RangoInvalidoException
+  note right of S : ⚠ NO VERIFICADO: nombre inventado, no existe en LOG-02; confirmar.
+  C --> W : 422
+  W --> U : rechaza el filtro
+else rango válido
+  S -> RM : sumarPorCategoria(idUsuario, desde, hasta)
+  note right of RM : agregación SUM en la BD
+  RM --> S : List<TotalPorCategoria>
+  S -> RP : buscarPorPeriodo(idUsuario, mes)
+  note right of RP : ⚠ NO VERIFICADO: supuesto, mes derivado de desde (el original usa mes sin definirlo).
+  RP --> S : List<Presupuesto>
+  S -> S : calcular balance, porcentajes y estado OK / ALERTA / EXCEDIDO (RN-11)
+  S --> C : ResumenFinanciero
+  C --> W : 200 OK
+  W --> U : cifras y gráfico por categoría
+end
+@enduml

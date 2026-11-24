@@ -1,0 +1,223 @@
+Vercel CLI 62.4.0 (Node.js 24.21.0)
+Deploying finanzas-personales
+Uploading [--------------------] (0.0B/1MB)
+Uploading [=====---------------] (276.9KB/1MB)
+Uploading [==========----------] (540.1KB/1MB)
+Uploading [===============-----] (796.1KB/1MB)
+Uploading [====================] (1.0MB/1MB)
+  Inspect         https://vercel.com/santiagooo2/finanzas-personales/2khUds8higHCpL28HhAYUY7kuJk4
+  Preview         https://finanzas-personales-g1h14hc3k-santiagooo2.vercel.app
+Building…
+Building…
+Running build in Washington, D.C., USA (East) – iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Downloading 61 deployment files...
+Restored build cache from previous deployment (EgjYApJBETdhuamMjvVymFoE7Q4G)
+Running "vercel build"
+Vercel CLI 66.6.0
+Installing dependencies...
+npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+up to date in 608ms
+19 packages are looking for funding
+run `npm fund` for details
+npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+npm warn Unknown env config "cache-dir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+> finanzas-web@1.0.0 build
+> tsc --noEmit && vite build
+vite v7.3.8 building client environment for production...
+transforming...
+[2K[1A[2K[G  Preview         https://finanzas-personales-g1h14hc3k-santiagooo2.vercel.app
+Completing…
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_2khUds8higHCpL28HhAYUY7kuJk4",
+    "url": "https://finanzas-personales-g1h14hc3k-santiagooo2.vercel.app",
+    "productionUrl": null,
+    "inspectorUrl": "https://vercel.com/santiagooo2/finanzas-personales/2khUds8higHCpL28HhAYUY7kuJk4",
+    "readyState": "READY",
+    "target": null,
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_2khUds8higHCpL28HhAYUY7kuJk4",
+    "buildMachine": {
+      "cores": 2,
+      "memory": 8192,
+      "machine": "basic",
+      "selectionType": "fixed",
+      "selectionSource": "plan-default"
+    },
+    "deploymentProtection": [
+      "vercel_authentication"
+    ]
+  },
+  "message": "Deployment finanzas-personales-g1h14hc3k-santiagooo2.vercel.app ready.",
+  "next": [
+    {
+      "command": "vercel curl https://finanzas-personales-g1h14hc3k-santiagooo2.vercel.app",
+      "when": "Verify deployment, including when Deployment Protection is enabled"
+    },
+    {
+      "command": "vercel inspect finanzas-personales-g1h14hc3k-santiagooo2.vercel.app",
+      "when": "Inspect deployment"
+    },
+    {
+      "command": "vercel deploy --prod",
+      "when": "Promote to production"
+    }
+  ]
+}
+Vercel CLI 62.4.0 (Node.js 24.21.0) | curl is in beta — https://vercel.com/feedback
+> You require a deployment protection bypass token to access this deployment... Generating one now...
+> Successfully generated deployment protection bypass token for project prj_eGavkQrCm1c3J0ta7bArH3qB9WYd
+
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="PulsoFinance: registra tus gastos e ingresos, controla presupuestos y consulta tu resumen." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect width='48' height='48' rx='11' fill='%23f0fdf4'/><rect x='8' y='30' width='6' height='11' rx='1.5' fill='%2316a34a'/><rect x='17' y='24' width='6' height='17' rx='1.5' fill='%2316a34a'/><rect x='26' y='18' width='6' height='23' rx='1.5' fill='%2316a34a'/><rect x='35' y='12' width='6' height='29' rx='1.5' fill='%2316a34a'/><path d='M7 24 17 15l7 5 13-12' fill='none' stroke='%2315803d' stroke-width='3' stroke-linecap='round'/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+100   1814   0   1814   0      0   3377      0                              0
+100   1814   0   1814   0      0   3377      0                              0
+100   1814   0   1814   0      0   3377      0                              0
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <meta name="theme-color" content="#16a34a" />
+    <script>
+      try { var t = localStorage.getItem('pulso-tema'); if (t === 'oscuro' || t === 'claro') document.documentElement.dataset.theme = t === 'oscuro' ? 'dark' : 'light'; } catch (e) {}
+    </script>
+    <title>PulsoFinance · Finanzas Personales</title>
+    <script type="module" crossorigin src="/assets/index-uiUZ9tMj.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C-i98xhH.css">
+  </head>
+  <body>
+    <div id="root"></div>
+
+  </body>
+</html>
+<script async data-explicit-opt-in="true" data-deployment-id="dpl_2khUds8higHCpL28HhAYUY7kuJk4" src="https://vercel.live/_next-live/feedback/feedback.js"></script>
+Vercel CLI 62.4.0 (Node.js 24.21.0) | curl is in beta — https://vercel.com/feedback
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+  0      0   0      0   0      0      0      0           00:01              0
+  0      0   0      0   0      0      0      0           00:02              0
+  0      0   0      0   0      0      0      0           00:03              0
+  0      0   0      0   0      0      0      0           00:04              0
+  0      0   0      0   0      0      0      0           00:05              0
+  0      0   0      0   0      0      0      0           00:06              0
+  0      0   0      0   0      0      0      0           00:07              0
+  0      0   0      0   0      0      0      0           00:08              0
+  0      0   0      0   0      0      0      0           00:09              0
+  0      0   0      0   0      0      0      0           00:10              0
+  0      0   0      0   0      0      0      0           00:11              0
+  0      0   0      0   0      0      0      0           00:12              0
+  0      0   0      0   0      0      0      0           00:13              0
+  0      0   0      0   0      0      0      0           00:14              0
+  0      0   0      0   0      0      0      0           00:15              0
+  0      0   0      0   0      0      0      0           00:16              0
+  0      0   0      0   0      0      0      0           00:17              0
+  0      0   0      0   0      0      0      0           00:18              0
+  0      0   0      0   0      0      0      0           00:19              0
+  0      0   0      0   0      0      0      0           00:20              0
+  0      0   0      0   0      0      0      0           00:21              0
+  0      0   0      0   0      0      0      0           00:22              0
+  0      0   0      0   0      0      0      0           00:23              0
+  0      0   0      0   0      0      0      0           00:24              0
+  0      0   0      0   0      0      0      0           00:25              0
+  0      0   0      0   0      0      0      0           00:26              0
+  0      0   0      0   0      0      0      0           00:27              0
+  0      0   0      0   0      0      0      0           00:28              0
+  0      0   0      0   0      0      0      0           00:29              0
+  0      0   0      0   0      0      0      0           00:30              0
+  0      0   0      0   0      0      0      0           00:31              0
+  0      0   0      0   0      0      0      0           00:32              0
+  0      0   0      0   0      0      0      0           00:33              0
+  0      0   0      0   0      0      0      0           00:34              0
+  0      0   0      0   0      0      0      0           00:35              0
+  0      0   0      0   0      0      0      0           00:36              0
+  0      0   0      0   0      0      0      0           00:37              0
+  0      0   0      0   0      0      0      0           00:38              0
+  0      0   0      0   0      0      0      0           00:39              0
+  0      0   0      0   0      0      0      0           00:40              0
+  0      0   0      0   0      0      0      0           00:41              0
+  0      0   0      0   0      0      0      0           00:42              0
+  0      0   0      0   0      0      0      0           00:43              0
+  0      0   0      0   0      0      0      0           00:44              0
+  0      0   0      0   0      0      0      0           00:45              0
+  0      0   0      0   0      0      0      0           00:46              0
+  0      0   0      0   0      0      0      0           00:47              0
+  0      0   0      0   0      0      0      0           00:48              0
+  0      0   0      0   0      0      0      0           00:49              0
+  0      0   0      0   0      0      0      0           00:50              0
+  0      0   0      0   0      0      0      0           00:51              0
+  0      0   0      0   0      0      0      0           00:52              0
+  0      0   0      0   0      0      0      0           00:53              0
+  0      0   0      0   0      0      0      0           00:54              0
+  0      0   0      0   0      0      0      0           00:55              0
+  0      0   0      0   0      0      0      0           00:56              0
+  0      0   0      0   0      0      0      0           00:57              0
+  0      0   0      0   0      0      0      0           00:58              0
+  0      0   0      0   0      0      0      0           00:59              0
+  0      0   0      0   0      0      0      0           01:00              0
+  0      0   0      0   0      0      0      0           01:01              0
+  0      0   0      0   0      0      0      0           01:02              0
+  0      0   0      0   0      0      0      0           01:03              0
+  0      0   0      0   0      0      0      0           01:04              0
+  0      0   0      0   0      0      0      0           01:05              0
+  0      0   0      0   0      0      0      0           01:06              0
+  0      0   0      0   0      0      0      0           01:07              0
+  0      0   0      0   0      0      0      0           01:08              0
+  0      0   0      0   0      0      0      0           01:09              0
+  0      0   0      0   0      0      0      0           01:10              0
+  0      0   0      0   0      0      0      0           01:11              0
+  0      0   0      0   0      0      0      0           01:12              0
+  0      0   0      0   0      0      0      0           01:13              0
+  0      0   0      0   0      0      0      0           01:14              0
+  0      0   0      0   0      0      0      0           01:15              0
+  0      0   0      0   0      0      0      0           01:16              0
+  0      0   0      0   0      0      0      0           01:17              0
+  0      0   0      0   0      0      0      0           01:18              0
+  0      0   0      0   0      0      0      0           01:19              0
+  0      0   0      0   0      0      0      0           01:20              0
+  0      0   0      0   0      0      0      0           01:22              0
+  0      0   0      0   0      0      0      0           01:23              0
+  0      0   0      0   0      0      0      0           01:24              0
+  0      0   0      0   0      0      0      0           01:25              0
+  0      0   0      0   0      0      0      0           01:26              0
+  0      0   0      0   0      0      0      0           01:27              0
+  0      0   0      0   0      0      0      0           01:28              0
+  0      0   0      0   0      0      0      0           01:29              0
+  0      0   0      0   0      0      0      0           01:30              0
+  0      0   0      0   0      0      0      0           01:31              0
+  0      0   0      0   0      0      0      0           01:32              0
+  0      0   0      0   0      0      0      0           01:33              0
+  0      0   0      0   0      0      0      0           01:34              0
+  0      0   0      0   0      0      0      0           01:35              0
+  0      0   0      0   0      0      0      0           01:36              0
+  0      0   0      0   0      0      0      0           01:37              0
+  0      0   0      0   0      0      0      0           01:38              0
+  0      0   0      0   0      0      0      0           01:39              0
+  0      0   0      0   0      0      0      0           01:40              0
+  0      0   0      0   0      0      0      0           01:41              0
+  0      0   0      0   0      0      0      0           01:42              0
+  0      0   0      0   0      0      0      0           01:43              0
+  0      0   0      0   0      0      0      0           01:44              0
+  0      0   0      0   0      0      0      0           01:45              0
+  0      0   0      0   0      0      0      0           01:46              0
+  0      0   0      0   0      0      0      0           01:47              0
+  0      0   0      0   0      0      0      0           01:48              0
+  0      0   0      0   0      0      0      0           01:49              0
+100    127 100    127   0      0      1      0   02:07   01:49   00:18     22
+100    127 100    127   0      0      1      0   02:07   01:49   00:18     22
+100    127 100    127   0      0      1      0   02:07   01:49   00:18     22
+{"type":"about:blank","title":"No autenticado","status":401,"detail":"Inicia sesión para continuar","codigo":"NO_AUTENTICADO"}

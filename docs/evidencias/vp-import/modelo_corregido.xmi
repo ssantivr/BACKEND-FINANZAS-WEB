@@ -1,0 +1,886 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xmi:XMI xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmi:version="2.1">
+  <uml:Model xmi:id="M_root" name="Finanzas_Personales_corregido">
+    <ownedComment xmi:type="uml:Comment" xmi:id="CM_header" body="Generado en rama ai/redesign 2026-11-09. Importación en Visual Paradigm: NO VERIFICADO." />
+    <packagedElement xmi:type="uml:Package" xmi:id="PK_tipos" name="tipos">
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_UUID" name="UUID" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_String" name="String" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_LocalDate" name="LocalDate" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_LocalDateTime" name="LocalDateTime" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_YearMonth" name="YearMonth" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_BigDecimal" name="BigDecimal" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_int" name="int" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_long" name="long" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_boolean" name="boolean" />
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="T_Currency" name="Currency" />
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="PK_dominio" name="dominio">
+      <packagedElement xmi:type="uml:Class" xmi:id="C_Usuario" name="Usuario">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Usuario_st" body="stereotype: entity" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_nombre" name="nombre" visibility="private" type="T_String" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_correo" name="correo" visibility="private" type="C_Email" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_hashContrasena" name="hashContrasena" visibility="private" type="T_String" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_estado" name="estado" visibility="private" type="E_EstadoCuenta" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_intentosFallidos" name="intentosFallidos" visibility="private" type="T_int" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_bloqueadoHasta" name="bloqueadoHasta" visibility="private" type="T_LocalDateTime">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_Usuario_bloqueadoHasta_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_Usuario_bloqueadoHasta_up" value="1" />
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_fechaRegistro" name="fechaRegistro" visibility="private" type="T_LocalDateTime" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_eliminadaEn" name="eliminadaEn" visibility="private" type="T_LocalDateTime">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_Usuario_eliminadaEn_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_Usuario_eliminadaEn_up" value="1" />
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Usuario_bloqueada" name="bloqueada" visibility="public" type="T_boolean" isDerived="true">
+          <ownedRule xmi:type="uml:Constraint" xmi:id="K_Usuario_bloqueada_derivacion" name="bloqueada_derivacion">
+            <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Usuario_bloqueada_derivacion_s">
+              <language>OCL</language>
+              <body>derive: bloqueadoHasta &lt;&gt; null and bloqueadoHasta &gt; now()</body>
+            </specification>
+          </ownedRule>
+        </ownedAttribute>
+        <ownedRule xmi:type="uml:Constraint" xmi:id="K_Usuario_RN_06_correo_unico_minusculas" name="RN_06_correo_unico_minusculas">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Usuario_RN_06_correo_unico_minusculas_s">
+            <language>OCL</language>
+            <body>self.correo.valor = self.correo.valor.toLowerCase() and Usuario.allInstances()-&gt;isUnique(u | u.correo.valor)</body>
+          </specification>
+        </ownedRule>
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Usuario_d1" body="D-1: eliminadaEn + borrado logico (EstadoCuenta.ELIMINADA). D-4: BLOQUEADA se deriva de bloqueadoHasta." />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_Movimiento" name="Movimiento" isAbstract="true">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Movimiento_st" body="stereotype: entity" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Movimiento_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Movimiento_idUsuario" name="idUsuario" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Movimiento_monto" name="monto" visibility="protected" type="C_Dinero" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Movimiento_fecha" name="fecha" visibility="protected" type="T_LocalDate" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Movimiento_descripcion" name="descripcion" visibility="protected" type="T_String">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_Movimiento_descripcion_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_Movimiento_descripcion_up" value="1" />
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Movimiento_categoria" name="categoria" visibility="protected" type="C_Categoria" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Movimiento_fechaRegistro" name="fechaRegistro" visibility="protected" type="T_LocalDateTime" isReadOnly="true" />
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Movimiento_getTipo" name="getTipo" visibility="public" isAbstract="true">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Movimiento_getTipo__return" name="return" direction="return" type="E_TipoMovimiento" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Movimiento_getSigno" name="getSigno" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Movimiento_getSigno__return" name="return" direction="return" type="T_int" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Movimiento_modificar" name="modificar" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Movimiento_modificar__monto" name="monto" direction="in" type="C_Dinero" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Movimiento_modificar__fecha" name="fecha" direction="in" type="T_LocalDate" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Movimiento_modificar__descripcion" name="descripcion" direction="in" type="T_String" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Movimiento_modificar__categoria" name="categoria" direction="in" type="C_Categoria" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Movimiento_perteneceA" name="perteneceA" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Movimiento_perteneceA__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Movimiento_perteneceA__return" name="return" direction="return" type="T_boolean" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Movimiento_validar" name="validar" visibility="protected" />
+        <ownedRule xmi:type="uml:Constraint" xmi:id="K_Movimiento_RN_01_monto" name="RN_01_monto">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Movimiento_RN_01_monto_s">
+            <language>OCL</language>
+            <body>self.monto.esPositivo() and self.monto.cantidad.scale() &lt;= 2 and self.monto.cantidad &lt;= 999999999999.99</body>
+          </specification>
+        </ownedRule>
+        <ownedRule xmi:type="uml:Constraint" xmi:id="K_Movimiento_RN_03_tipo_categoria" name="RN_03_tipo_categoria">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Movimiento_RN_03_tipo_categoria_s">
+            <language>OCL</language>
+            <body>self.categoria.tipo = self.getTipo()</body>
+          </specification>
+        </ownedRule>
+        <ownedRule xmi:type="uml:Constraint" xmi:id="K_Movimiento_RN_04_categoria_disponible" name="RN_04_categoria_disponible">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Movimiento_RN_04_categoria_disponible_s">
+            <language>OCL</language>
+            <body>self.categoria.idPropietario-&gt;isEmpty() or self.categoria.idPropietario = self.idUsuario</body>
+          </specification>
+        </ownedRule>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_Gasto" name="Gasto">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Gasto_st" body="stereotype: entity" />
+        <generalization xmi:type="uml:Generalization" xmi:id="G_Gasto_Movimiento" general="C_Movimiento" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Gasto_metodoPago" name="metodoPago" visibility="private" type="E_MetodoPago" />
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Gasto_getTipo" name="getTipo" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Gasto_getTipo__return" name="return" direction="return" type="E_TipoMovimiento" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Gasto_getMetodoPago" name="getMetodoPago" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Gasto_getMetodoPago__return" name="return" direction="return" type="E_MetodoPago" />
+        </ownedOperation>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_Ingreso" name="Ingreso">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Ingreso_st" body="stereotype: entity" />
+        <generalization xmi:type="uml:Generalization" xmi:id="G_Ingreso_Movimiento" general="C_Movimiento" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Ingreso_fuente" name="fuente" visibility="private" type="T_String">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_Ingreso_fuente_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_Ingreso_fuente_up" value="1" />
+        </ownedAttribute>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Ingreso_getTipo" name="getTipo" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Ingreso_getTipo__return" name="return" direction="return" type="E_TipoMovimiento" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Ingreso_getFuente" name="getFuente" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Ingreso_getFuente__return" name="return" direction="return" type="T_String" />
+        </ownedOperation>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_Categoria" name="Categoria">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Categoria_st" body="stereotype: entity" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Categoria_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Categoria_nombre" name="nombre" visibility="private" type="T_String" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Categoria_tipo" name="tipo" visibility="private" type="E_TipoMovimiento" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Categoria_icono" name="icono" visibility="private" type="T_String">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_Categoria_icono_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_Categoria_icono_up" value="1" />
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Categoria_idPropietario" name="idPropietario" visibility="private" type="T_UUID">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_Categoria_idPropietario_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_Categoria_idPropietario_up" value="1" />
+        </ownedAttribute>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Categoria_esPredeterminada" name="esPredeterminada" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Categoria_esPredeterminada__return" name="return" direction="return" type="T_boolean" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Categoria_estaDisponiblePara" name="estaDisponiblePara" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Categoria_estaDisponiblePara__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Categoria_estaDisponiblePara__return" name="return" direction="return" type="T_boolean" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Categoria_renombrar" name="renombrar" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Categoria_renombrar__nombre" name="nombre" direction="in" type="T_String" />
+        </ownedOperation>
+        <ownedRule xmi:type="uml:Constraint" xmi:id="K_Categoria_RN_09_nombre" name="RN_09_nombre">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Categoria_RN_09_nombre_s">
+            <language>OCL</language>
+            <body>self.nombre.size() &gt;= 1 and self.nombre.size() &lt;= 40 and Categoria.allInstances()-&gt;select(c | c.idPropietario = self.idPropietario and c.tipo = self.tipo)-&gt;isUnique(c | c.nombre)</body>
+          </specification>
+        </ownedRule>
+        <ownedRule xmi:type="uml:Constraint" xmi:id="K_Categoria_RN_14_PROPUESTA_sin_duplicar_predeterminada" name="RN_14_PROPUESTA_sin_duplicar_predeterminada">
+          <ownedComment xmi:type="uml:Comment" xmi:id="K_Categoria_RN_14_PROPUESTA_sin_duplicar_predeterminada_c" body="PROPUESTA: una categoria propia no puede tener el mismo nombre normalizado y tipo que una predeterminada. No es requisito original." />
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Categoria_RN_14_PROPUESTA_sin_duplicar_predeterminada_s">
+            <language>OCL</language>
+            <body>self.idPropietario-&gt;notEmpty() implies Categoria.allInstances()-&gt;select(d | d.idPropietario-&gt;isEmpty())-&gt;forAll(d | d.tipo &lt;&gt; self.tipo or d.nombre.toLowerCase().trim() &lt;&gt; self.nombre.toLowerCase().trim())</body>
+          </specification>
+        </ownedRule>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_Presupuesto" name="Presupuesto">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Presupuesto_st" body="stereotype: entity" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Presupuesto_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Presupuesto_idUsuario" name="idUsuario" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Presupuesto_categoria" name="categoria" visibility="private" type="C_Categoria" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Presupuesto_periodo" name="periodo" visibility="private" type="T_YearMonth" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Presupuesto_limite" name="limite" visibility="private" type="C_Dinero" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Presupuesto_notificado" name="notificado" visibility="private" type="T_boolean" />
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Presupuesto_calcularEstado" name="calcularEstado" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Presupuesto_calcularEstado__consumo" name="consumo" direction="in" type="C_Dinero" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Presupuesto_calcularEstado__return" name="return" direction="return" type="E_EstadoPresupuesto" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Presupuesto_debeNotificar" name="debeNotificar" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Presupuesto_debeNotificar__consumo" name="consumo" direction="in" type="C_Dinero" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Presupuesto_debeNotificar__return" name="return" direction="return" type="T_boolean" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Presupuesto_marcarNotificado" name="marcarNotificado" visibility="public" />
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Presupuesto_cambiarLimite" name="cambiarLimite" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Presupuesto_cambiarLimite__limite" name="limite" direction="in" type="C_Dinero" />
+        </ownedOperation>
+        <ownedRule xmi:type="uml:Constraint" xmi:id="K_Presupuesto_RN_10_solo_gasto_unico" name="RN_10_solo_gasto_unico">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Presupuesto_RN_10_solo_gasto_unico_s">
+            <language>OCL</language>
+            <body>self.categoria.tipo = TipoMovimiento::GASTO and Presupuesto.allInstances()-&gt;select(p | p.idUsuario = self.idUsuario)-&gt;isUnique(p | Tuple{c = p.categoria, m = p.periodo})</body>
+          </specification>
+        </ownedRule>
+        <ownedRule xmi:type="uml:Constraint" xmi:id="K_Presupuesto_RN_12_alerta_una_vez" name="RN_12_alerta_una_vez">
+          <specification xmi:type="uml:OpaqueExpression" xmi:id="K_Presupuesto_RN_12_alerta_una_vez_s">
+            <language>OCL</language>
+            <body>self.debeNotificar(consumo) = (self.calcularEstado(consumo) = EstadoPresupuesto::EXCEDIDO and not self.notificado)</body>
+          </specification>
+        </ownedRule>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_SesionRefresco" name="SesionRefresco">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_SesionRefresco_st" body="stereotype: entity" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_SesionRefresco_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_SesionRefresco_hash" name="hash" visibility="private" type="T_String" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_SesionRefresco_idUsuario" name="idUsuario" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_SesionRefresco_expira" name="expira" visibility="private" type="T_LocalDateTime" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_SesionRefresco_revocadoEn" name="revocadoEn" visibility="private" type="T_LocalDateTime">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_SesionRefresco_revocadoEn_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_SesionRefresco_revocadoEn_up" value="1" />
+        </ownedAttribute>
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_SesionRefresco_reemplazadoPor" name="reemplazadoPor" visibility="private" type="T_UUID">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_SesionRefresco_reemplazadoPor_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_SesionRefresco_reemplazadoPor_up" value="1" />
+        </ownedAttribute>
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_SesionRefresco_d6" body="D-6: revocadoEn y reemplazadoPor (cadena de rotacion)." />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_TokenRecuperacion" name="TokenRecuperacion">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_TokenRecuperacion_st" body="stereotype: entity" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_TokenRecuperacion_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_TokenRecuperacion_hash" name="hash" visibility="private" type="T_String" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_TokenRecuperacion_idUsuario" name="idUsuario" visibility="private" type="T_UUID" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_TokenRecuperacion_expira" name="expira" visibility="private" type="T_LocalDateTime" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_TokenRecuperacion_usadoEn" name="usadoEn" visibility="private" type="T_LocalDateTime">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_TokenRecuperacion_usadoEn_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_TokenRecuperacion_usadoEn_up" value="1" />
+        </ownedAttribute>
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_TokenRecuperacion_d7" body="D-7: usadoEn (timestamp)." />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_Dinero" name="Dinero">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Dinero_st" body="stereotype: value object" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Dinero_cantidad" name="cantidad" visibility="private" type="T_BigDecimal" isReadOnly="true" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Dinero_moneda" name="moneda" visibility="private" type="T_Currency" isReadOnly="true" />
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Dinero_sumar" name="sumar" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_sumar__otro" name="otro" direction="in" type="C_Dinero" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_sumar__return" name="return" direction="return" type="C_Dinero" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Dinero_restar" name="restar" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_restar__otro" name="otro" direction="in" type="C_Dinero" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_restar__return" name="return" direction="return" type="C_Dinero" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Dinero_porcentajeDe" name="porcentajeDe" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_porcentajeDe__total" name="total" direction="in" type="C_Dinero" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_porcentajeDe__return" name="return" direction="return" type="T_BigDecimal" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Dinero_esPositivo" name="esPositivo" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_esPositivo__return" name="return" direction="return" type="T_boolean" />
+        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Dinero_cero" name="cero" visibility="public" isStatic="true">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_cero__moneda" name="moneda" direction="in" type="T_Currency" />
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Dinero_cero__return" name="return" direction="return" type="C_Dinero" />
+        </ownedOperation>
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Dinero_d8" body="D-8: moneda unica COP (supuesto)." />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Class" xmi:id="C_Email" name="Email">
+        <ownedComment xmi:type="uml:Comment" xmi:id="C_Email_st" body="stereotype: value object" />
+        <ownedAttribute xmi:type="uml:Property" xmi:id="P_Email_valor" name="valor" visibility="private" type="T_String" isReadOnly="true" />
+        <ownedOperation xmi:type="uml:Operation" xmi:id="OP_Email_getValor" name="getValor" visibility="public">
+          <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_Email_getValor__return" name="return" direction="return" type="T_String" />
+        </ownedOperation>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="E_TipoMovimiento" name="TipoMovimiento">
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_TipoMovimiento_INGRESO" name="INGRESO" />
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_TipoMovimiento_GASTO" name="GASTO" />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="E_MetodoPago" name="MetodoPago">
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_MetodoPago_EFECTIVO" name="EFECTIVO" />
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_MetodoPago_TARJETA_DEBITO" name="TARJETA_DEBITO" />
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_MetodoPago_TARJETA_CREDITO" name="TARJETA_CREDITO" />
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_MetodoPago_TRANSFERENCIA" name="TRANSFERENCIA" />
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_MetodoPago_OTRO" name="OTRO" />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="E_EstadoCuenta" name="EstadoCuenta">
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_EstadoCuenta_ACTIVA" name="ACTIVA" />
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_EstadoCuenta_ELIMINADA" name="ELIMINADA" />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="E_EstadoPresupuesto" name="EstadoPresupuesto">
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_EstadoPresupuesto_OK" name="OK" />
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_EstadoPresupuesto_ALERTA" name="ALERTA" />
+        <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="EL_EstadoPresupuesto_EXCEDIDO" name="EXCEDIDO" />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="A_Usuario_Movimiento" name="Usuario_Movimiento" memberEnd="A_Usuario_Movimiento_e1 A_Usuario_Movimiento_e2">
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_Movimiento_e1" name="usuario" type="C_Usuario" association="A_Usuario_Movimiento" aggregation="composite" />
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_Movimiento_e2" name="movimientos" type="C_Movimiento" association="A_Usuario_Movimiento">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Usuario_Movimiento_e2_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Usuario_Movimiento_e2_up" value="*" />
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="A_Usuario_Categoria" name="Usuario_Categoria" memberEnd="A_Usuario_Categoria_e1 A_Usuario_Categoria_e2">
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_Categoria_e1" name="propietario" type="C_Usuario" association="A_Usuario_Categoria" aggregation="composite">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Usuario_Categoria_e1_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Usuario_Categoria_e1_up" value="1" />
+        </ownedEnd>
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_Categoria_e2" name="categoriasPersonalizadas" type="C_Categoria" association="A_Usuario_Categoria">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Usuario_Categoria_e2_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Usuario_Categoria_e2_up" value="*" />
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="A_Usuario_Presupuesto" name="Usuario_Presupuesto" memberEnd="A_Usuario_Presupuesto_e1 A_Usuario_Presupuesto_e2">
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_Presupuesto_e1" name="usuario" type="C_Usuario" association="A_Usuario_Presupuesto" aggregation="composite" />
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_Presupuesto_e2" name="presupuestos" type="C_Presupuesto" association="A_Usuario_Presupuesto">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Usuario_Presupuesto_e2_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Usuario_Presupuesto_e2_up" value="*" />
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="A_Usuario_SesionRefresco" name="Usuario_SesionRefresco" memberEnd="A_Usuario_SesionRefresco_e1 A_Usuario_SesionRefresco_e2">
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_SesionRefresco_e1" name="usuario" type="C_Usuario" association="A_Usuario_SesionRefresco" aggregation="composite" />
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_SesionRefresco_e2" name="sesiones" type="C_SesionRefresco" association="A_Usuario_SesionRefresco">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Usuario_SesionRefresco_e2_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Usuario_SesionRefresco_e2_up" value="*" />
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="A_Usuario_TokenRecuperacion" name="Usuario_TokenRecuperacion" memberEnd="A_Usuario_TokenRecuperacion_e1 A_Usuario_TokenRecuperacion_e2">
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_TokenRecuperacion_e1" name="usuario" type="C_Usuario" association="A_Usuario_TokenRecuperacion" aggregation="composite" />
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Usuario_TokenRecuperacion_e2" name="tokensRecuperacion" type="C_TokenRecuperacion" association="A_Usuario_TokenRecuperacion">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Usuario_TokenRecuperacion_e2_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Usuario_TokenRecuperacion_e2_up" value="*" />
+        </ownedEnd>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="A_Movimiento_Categoria" name="Movimiento_Categoria" memberEnd="A_Movimiento_Categoria_e1 A_Movimiento_Categoria_e2">
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Movimiento_Categoria_e1" name="movimientos" type="C_Movimiento" association="A_Movimiento_Categoria">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Movimiento_Categoria_e1_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Movimiento_Categoria_e1_up" value="*" />
+        </ownedEnd>
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Movimiento_Categoria_e2" name="categoria" type="C_Categoria" association="A_Movimiento_Categoria" />
+      </packagedElement>
+      <packagedElement xmi:type="uml:Association" xmi:id="A_Presupuesto_Categoria" name="Presupuesto_Categoria" memberEnd="A_Presupuesto_Categoria_e1 A_Presupuesto_Categoria_e2">
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Presupuesto_Categoria_e1" name="presupuestos" type="C_Presupuesto" association="A_Presupuesto_Categoria">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Presupuesto_Categoria_e1_lo" value="0" />
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Presupuesto_Categoria_e1_up" value="*" />
+        </ownedEnd>
+        <ownedEnd xmi:type="uml:Property" xmi:id="A_Presupuesto_Categoria_e2" name="categoria" type="C_Categoria" association="A_Presupuesto_Categoria" />
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="PK_aplicacion" name="aplicacion">
+      <packagedElement xmi:type="uml:Package" xmi:id="PK_puertos_entrada" name="aplicacion.puertos.entrada">
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IAutenticacion" name="IAutenticacion">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IAutenticacion_registrar" name="registrar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_registrar__cmd" name="cmd" direction="in" type="C_RegistroCmd" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_registrar__return" name="return" direction="return" type="C_UsuarioDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IAutenticacion_iniciarSesion" name="iniciarSesion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_iniciarSesion__correo" name="correo" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_iniciarSesion__clave" name="clave" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_iniciarSesion__return" name="return" direction="return" type="C_TokensDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IAutenticacion_renovarSesion" name="renovarSesion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_renovarSesion__refreshToken" name="refreshToken" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_renovarSesion__return" name="return" direction="return" type="C_TokensDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IAutenticacion_cerrarSesion" name="cerrarSesion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_cerrarSesion__refreshToken" name="refreshToken" direction="in" type="T_String" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IAutenticacion_solicitarRecuperacion" name="solicitarRecuperacion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_solicitarRecuperacion__correo" name="correo" direction="in" type="T_String" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IAutenticacion_restablecerContrasena" name="restablecerContrasena" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_restablecerContrasena__token" name="token" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IAutenticacion_restablecerContrasena__nuevaClave" name="nuevaClave" direction="in" type="T_String" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IGestionMovimientos" name="IGestionMovimientos">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionMovimientos_registrarGasto" name="registrarGasto" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_registrarGasto__cmd" name="cmd" direction="in" type="C_RegistrarGastoCmd" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_registrarGasto__return" name="return" direction="return" type="C_MovimientoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionMovimientos_registrarIngreso" name="registrarIngreso" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_registrarIngreso__cmd" name="cmd" direction="in" type="C_RegistrarIngresoCmd" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_registrarIngreso__return" name="return" direction="return" type="C_MovimientoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionMovimientos_modificar" name="modificar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_modificar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_modificar__idMovimiento" name="idMovimiento" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_modificar__cmd" name="cmd" direction="in" type="C_ModificarMovimientoCmd" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_modificar__return" name="return" direction="return" type="C_MovimientoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionMovimientos_eliminar" name="eliminar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_eliminar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionMovimientos_eliminar__idMovimiento" name="idMovimiento" direction="in" type="T_UUID" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IGestionCategorias" name="IGestionCategorias">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionCategorias_listarDisponibles" name="listarDisponibles" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_listarDisponibles__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_listarDisponibles__tipo" name="tipo" direction="in" type="E_TipoMovimiento" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_listarDisponibles__return" name="return" direction="return" type="C_CategoriaDTO">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IGestionCategorias_listarDisponibles__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IGestionCategorias_listarDisponibles__return_up" value="*" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionCategorias_crear" name="crear" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_crear__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_crear__nombre" name="nombre" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_crear__tipo" name="tipo" direction="in" type="E_TipoMovimiento" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_crear__return" name="return" direction="return" type="C_CategoriaDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionCategorias_renombrar" name="renombrar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_renombrar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_renombrar__idCategoria" name="idCategoria" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_renombrar__nombre" name="nombre" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_renombrar__return" name="return" direction="return" type="C_CategoriaDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionCategorias_eliminar" name="eliminar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_eliminar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_eliminar__idCategoria" name="idCategoria" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionCategorias_eliminar__idCategoriaDestino" name="idCategoriaDestino" direction="in" type="T_UUID" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IGestionPresupuestos" name="IGestionPresupuestos">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionPresupuestos_definir" name="definir" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionPresupuestos_definir__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionPresupuestos_definir__idCategoria" name="idCategoria" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionPresupuestos_definir__periodo" name="periodo" direction="in" type="T_YearMonth" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionPresupuestos_definir__limite" name="limite" direction="in" type="C_Dinero" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionPresupuestos_definir__return" name="return" direction="return" type="C_PresupuestoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IGestionPresupuestos_listar" name="listar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionPresupuestos_listar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionPresupuestos_listar__periodo" name="periodo" direction="in" type="T_YearMonth" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IGestionPresupuestos_listar__return" name="return" direction="return" type="C_PresupuestoDTO">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IGestionPresupuestos_listar__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IGestionPresupuestos_listar__return_up" value="*" />
+            </ownedParameter>
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IEvaluadorPresupuesto" name="IEvaluadorPresupuesto">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IEvaluadorPresupuesto_evaluar" name="evaluar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IEvaluadorPresupuesto_evaluar__gasto" name="gasto" direction="in" type="C_Gasto" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IConsultaFinanciera" name="IConsultaFinanciera">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IConsultaFinanciera_consultarHistorial" name="consultarHistorial" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_consultarHistorial__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_consultarHistorial__filtro" name="filtro" direction="in" type="C_FiltroMovimientos" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_consultarHistorial__pagina" name="pagina" direction="in" type="T_int" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_consultarHistorial__tamano" name="tamano" direction="in" type="T_int" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_consultarHistorial__return" name="return" direction="return" type="C_Pagina" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IConsultaFinanciera_obtenerMovimiento" name="obtenerMovimiento" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_obtenerMovimiento__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_obtenerMovimiento__idMovimiento" name="idMovimiento" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_obtenerMovimiento__return" name="return" direction="return" type="C_MovimientoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IConsultaFinanciera_obtenerResumen" name="obtenerResumen" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_obtenerResumen__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_obtenerResumen__desde" name="desde" direction="in" type="T_LocalDate" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_obtenerResumen__hasta" name="hasta" direction="in" type="T_LocalDate" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IConsultaFinanciera_obtenerResumen__return" name="return" direction="return" type="C_ResumenFinanciero" />
+          </ownedOperation>
+        </packagedElement>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Package" xmi:id="PK_puertos_salida" name="aplicacion.puertos.salida">
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IRepositorioUsuarios" name="IRepositorioUsuarios">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioUsuarios_guardar" name="guardar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioUsuarios_guardar__u" name="u" direction="in" type="C_Usuario" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioUsuarios_buscarPorId" name="buscarPorId" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioUsuarios_buscarPorId__id" name="id" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioUsuarios_buscarPorId__return" name="return" direction="return" type="C_Usuario">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IRepositorioUsuarios_buscarPorId__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IRepositorioUsuarios_buscarPorId__return_up" value="1" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioUsuarios_buscarPorCorreo" name="buscarPorCorreo" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioUsuarios_buscarPorCorreo__correo" name="correo" direction="in" type="C_Email" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioUsuarios_buscarPorCorreo__return" name="return" direction="return" type="C_Usuario">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IRepositorioUsuarios_buscarPorCorreo__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IRepositorioUsuarios_buscarPorCorreo__return_up" value="1" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioUsuarios_existeCorreo" name="existeCorreo" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioUsuarios_existeCorreo__correo" name="correo" direction="in" type="C_Email" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioUsuarios_existeCorreo__return" name="return" direction="return" type="T_boolean" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IRepositorioMovimientos" name="IRepositorioMovimientos">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioMovimientos_guardar" name="guardar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_guardar__m" name="m" direction="in" type="C_Movimiento" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioMovimientos_eliminar" name="eliminar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_eliminar__m" name="m" direction="in" type="C_Movimiento" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioMovimientos_buscarDeUsuario" name="buscarDeUsuario" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_buscarDeUsuario__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_buscarDeUsuario__id" name="id" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_buscarDeUsuario__return" name="return" direction="return" type="C_Movimiento">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IRepositorioMovimientos_buscarDeUsuario__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IRepositorioMovimientos_buscarDeUsuario__return_up" value="1" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioMovimientos_buscar" name="buscar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_buscar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_buscar__filtro" name="filtro" direction="in" type="C_FiltroMovimientos" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_buscar__pagina" name="pagina" direction="in" type="T_int" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_buscar__tamano" name="tamano" direction="in" type="T_int" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_buscar__return" name="return" direction="return" type="C_Pagina" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioMovimientos_sumarPorCategoria" name="sumarPorCategoria" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_sumarPorCategoria__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_sumarPorCategoria__desde" name="desde" direction="in" type="T_LocalDate" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_sumarPorCategoria__hasta" name="hasta" direction="in" type="T_LocalDate" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_sumarPorCategoria__return" name="return" direction="return" type="C_TotalPorCategoria">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IRepositorioMovimientos_sumarPorCategoria__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IRepositorioMovimientos_sumarPorCategoria__return_up" value="*" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioMovimientos_sumarGastos" name="sumarGastos" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_sumarGastos__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_sumarGastos__idCategoria" name="idCategoria" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_sumarGastos__periodo" name="periodo" direction="in" type="T_YearMonth" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_sumarGastos__return" name="return" direction="return" type="C_Dinero" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioMovimientos_reasignarCategoria" name="reasignarCategoria" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_reasignarCategoria__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_reasignarCategoria__origen" name="origen" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_reasignarCategoria__destino" name="destino" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioMovimientos_reasignarCategoria__return" name="return" direction="return" type="T_int" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IRepositorioCategorias" name="IRepositorioCategorias">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioCategorias_guardar" name="guardar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioCategorias_guardar__c" name="c" direction="in" type="C_Categoria" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioCategorias_eliminar" name="eliminar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioCategorias_eliminar__c" name="c" direction="in" type="C_Categoria" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioCategorias_buscarDisponible" name="buscarDisponible" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioCategorias_buscarDisponible__id" name="id" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioCategorias_buscarDisponible__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioCategorias_buscarDisponible__return" name="return" direction="return" type="C_Categoria">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IRepositorioCategorias_buscarDisponible__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IRepositorioCategorias_buscarDisponible__return_up" value="1" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioCategorias_listarDisponibles" name="listarDisponibles" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioCategorias_listarDisponibles__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioCategorias_listarDisponibles__tipo" name="tipo" direction="in" type="E_TipoMovimiento" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioCategorias_listarDisponibles__return" name="return" direction="return" type="C_Categoria">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IRepositorioCategorias_listarDisponibles__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IRepositorioCategorias_listarDisponibles__return_up" value="*" />
+            </ownedParameter>
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IRepositorioPresupuestos" name="IRepositorioPresupuestos">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioPresupuestos_guardar" name="guardar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_guardar__p" name="p" direction="in" type="C_Presupuesto" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioPresupuestos_eliminar" name="eliminar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_eliminar__p" name="p" direction="in" type="C_Presupuesto" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioPresupuestos_buscar" name="buscar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_buscar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_buscar__idCategoria" name="idCategoria" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_buscar__periodo" name="periodo" direction="in" type="T_YearMonth" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_buscar__return" name="return" direction="return" type="C_Presupuesto">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IRepositorioPresupuestos_buscar__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IRepositorioPresupuestos_buscar__return_up" value="1" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IRepositorioPresupuestos_buscarPorPeriodo" name="buscarPorPeriodo" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_buscarPorPeriodo__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_buscarPorPeriodo__periodo" name="periodo" direction="in" type="T_YearMonth" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IRepositorioPresupuestos_buscarPorPeriodo__return" name="return" direction="return" type="C_Presupuesto">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_IRepositorioPresupuestos_buscarPorPeriodo__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_IRepositorioPresupuestos_buscarPorPeriodo__return_up" value="*" />
+            </ownedParameter>
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_ICifradorContrasena" name="ICifradorContrasena">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ICifradorContrasena_cifrar" name="cifrar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ICifradorContrasena_cifrar__clave" name="clave" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ICifradorContrasena_cifrar__return" name="return" direction="return" type="T_String" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ICifradorContrasena_coincide" name="coincide" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ICifradorContrasena_coincide__clave" name="clave" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ICifradorContrasena_coincide__hash" name="hash" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ICifradorContrasena_coincide__return" name="return" direction="return" type="T_boolean" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_IEmisorTokens" name="IEmisorTokens">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IEmisorTokens_emitir" name="emitir" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IEmisorTokens_emitir__u" name="u" direction="in" type="C_Usuario" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IEmisorTokens_emitir__return" name="return" direction="return" type="C_TokensDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IEmisorTokens_validarRefresh" name="validarRefresh" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IEmisorTokens_validarRefresh__token" name="token" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IEmisorTokens_validarRefresh__return" name="return" direction="return" type="T_UUID" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_IEmisorTokens_revocar" name="revocar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_IEmisorTokens_revocar__token" name="token" direction="in" type="T_String" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Interface" xmi:id="I_INotificador" name="INotificador">
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_INotificador_enviarRecuperacion" name="enviarRecuperacion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_INotificador_enviarRecuperacion__correo" name="correo" direction="in" type="C_Email" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_INotificador_enviarRecuperacion__enlace" name="enlace" direction="in" type="T_String" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_INotificador_enviarAlertaPresupuesto" name="enviarAlertaPresupuesto" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_INotificador_enviarAlertaPresupuesto__correo" name="correo" direction="in" type="C_Email" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_INotificador_enviarAlertaPresupuesto__p" name="p" direction="in" type="C_PresupuestoDTO" />
+          </ownedOperation>
+        </packagedElement>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Package" xmi:id="PK_servicios" name="aplicacion.servicios">
+        <packagedElement xmi:type="uml:Class" xmi:id="C_ServicioAutenticacion" name="ServicioAutenticacion">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_ServicioAutenticacion_st" body="stereotype: service" />
+          <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="IR_ServicioAutenticacion_IAutenticacion" name="ServicioAutenticacion_realiza_IAutenticacion" client="C_ServicioAutenticacion" supplier="I_IAutenticacion" contract="I_IAutenticacion" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioAutenticacion_repoUsuarios" name="repoUsuarios" visibility="private" isReadOnly="true" type="I_IRepositorioUsuarios" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioAutenticacion_cifrador" name="cifrador" visibility="private" isReadOnly="true" type="I_ICifradorContrasena" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioAutenticacion_emisor" name="emisor" visibility="private" isReadOnly="true" type="I_IEmisorTokens" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioAutenticacion_notificador" name="notificador" visibility="private" isReadOnly="true" type="I_INotificador" />
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioAutenticacion_registrar" name="registrar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_registrar__cmd" name="cmd" direction="in" type="C_RegistroCmd" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_registrar__return" name="return" direction="return" type="C_UsuarioDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioAutenticacion_iniciarSesion" name="iniciarSesion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_iniciarSesion__correo" name="correo" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_iniciarSesion__clave" name="clave" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_iniciarSesion__return" name="return" direction="return" type="C_TokensDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioAutenticacion_renovarSesion" name="renovarSesion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_renovarSesion__refreshToken" name="refreshToken" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_renovarSesion__return" name="return" direction="return" type="C_TokensDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioAutenticacion_cerrarSesion" name="cerrarSesion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_cerrarSesion__refreshToken" name="refreshToken" direction="in" type="T_String" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioAutenticacion_solicitarRecuperacion" name="solicitarRecuperacion" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_solicitarRecuperacion__correo" name="correo" direction="in" type="T_String" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioAutenticacion_restablecerContrasena" name="restablecerContrasena" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_restablecerContrasena__token" name="token" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioAutenticacion_restablecerContrasena__nuevaClave" name="nuevaClave" direction="in" type="T_String" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_ServicioMovimientos" name="ServicioMovimientos">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_ServicioMovimientos_st" body="stereotype: service" />
+          <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="IR_ServicioMovimientos_IGestionMovimientos" name="ServicioMovimientos_realiza_IGestionMovimientos" client="C_ServicioMovimientos" supplier="I_IGestionMovimientos" contract="I_IGestionMovimientos" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioMovimientos_repoMovimientos" name="repoMovimientos" visibility="private" isReadOnly="true" type="I_IRepositorioMovimientos" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioMovimientos_repoCategorias" name="repoCategorias" visibility="private" isReadOnly="true" type="I_IRepositorioCategorias" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioMovimientos_evaluador" name="evaluador" visibility="private" isReadOnly="true" type="I_IEvaluadorPresupuesto" />
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioMovimientos_registrarGasto" name="registrarGasto" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_registrarGasto__cmd" name="cmd" direction="in" type="C_RegistrarGastoCmd" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_registrarGasto__return" name="return" direction="return" type="C_MovimientoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioMovimientos_registrarIngreso" name="registrarIngreso" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_registrarIngreso__cmd" name="cmd" direction="in" type="C_RegistrarIngresoCmd" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_registrarIngreso__return" name="return" direction="return" type="C_MovimientoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioMovimientos_modificar" name="modificar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_modificar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_modificar__idMovimiento" name="idMovimiento" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_modificar__cmd" name="cmd" direction="in" type="C_ModificarMovimientoCmd" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_modificar__return" name="return" direction="return" type="C_MovimientoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioMovimientos_eliminar" name="eliminar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_eliminar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioMovimientos_eliminar__idMovimiento" name="idMovimiento" direction="in" type="T_UUID" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_ServicioCategorias" name="ServicioCategorias">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_ServicioCategorias_st" body="stereotype: service" />
+          <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="IR_ServicioCategorias_IGestionCategorias" name="ServicioCategorias_realiza_IGestionCategorias" client="C_ServicioCategorias" supplier="I_IGestionCategorias" contract="I_IGestionCategorias" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioCategorias_repoCategorias" name="repoCategorias" visibility="private" isReadOnly="true" type="I_IRepositorioCategorias" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioCategorias_repoMovimientos" name="repoMovimientos" visibility="private" isReadOnly="true" type="I_IRepositorioMovimientos" />
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioCategorias_listarDisponibles" name="listarDisponibles" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_listarDisponibles__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_listarDisponibles__tipo" name="tipo" direction="in" type="E_TipoMovimiento" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_listarDisponibles__return" name="return" direction="return" type="C_CategoriaDTO">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_ServicioCategorias_listarDisponibles__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_ServicioCategorias_listarDisponibles__return_up" value="*" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioCategorias_crear" name="crear" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_crear__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_crear__nombre" name="nombre" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_crear__tipo" name="tipo" direction="in" type="E_TipoMovimiento" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_crear__return" name="return" direction="return" type="C_CategoriaDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioCategorias_renombrar" name="renombrar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_renombrar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_renombrar__idCategoria" name="idCategoria" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_renombrar__nombre" name="nombre" direction="in" type="T_String" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_renombrar__return" name="return" direction="return" type="C_CategoriaDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioCategorias_eliminar" name="eliminar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_eliminar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_eliminar__idCategoria" name="idCategoria" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioCategorias_eliminar__idCategoriaDestino" name="idCategoriaDestino" direction="in" type="T_UUID" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_ServicioPresupuestos" name="ServicioPresupuestos">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_ServicioPresupuestos_st" body="stereotype: service" />
+          <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="IR_ServicioPresupuestos_IGestionPresupuestos" name="ServicioPresupuestos_realiza_IGestionPresupuestos" client="C_ServicioPresupuestos" supplier="I_IGestionPresupuestos" contract="I_IGestionPresupuestos" />
+          <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="IR_ServicioPresupuestos_IEvaluadorPresupuesto" name="ServicioPresupuestos_realiza_IEvaluadorPresupuesto" client="C_ServicioPresupuestos" supplier="I_IEvaluadorPresupuesto" contract="I_IEvaluadorPresupuesto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioPresupuestos_repoPresupuestos" name="repoPresupuestos" visibility="private" isReadOnly="true" type="I_IRepositorioPresupuestos" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioPresupuestos_repoMovimientos" name="repoMovimientos" visibility="private" isReadOnly="true" type="I_IRepositorioMovimientos" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioPresupuestos_notificador" name="notificador" visibility="private" isReadOnly="true" type="I_INotificador" />
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioPresupuestos_definir" name="definir" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_definir__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_definir__idCategoria" name="idCategoria" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_definir__periodo" name="periodo" direction="in" type="T_YearMonth" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_definir__limite" name="limite" direction="in" type="C_Dinero" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_definir__return" name="return" direction="return" type="C_PresupuestoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioPresupuestos_listar" name="listar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_listar__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_listar__periodo" name="periodo" direction="in" type="T_YearMonth" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_listar__return" name="return" direction="return" type="C_PresupuestoDTO">
+              <lowerValue xmi:type="uml:LiteralInteger" xmi:id="OP_ServicioPresupuestos_listar__return_lo" value="0" />
+              <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="OP_ServicioPresupuestos_listar__return_up" value="*" />
+            </ownedParameter>
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioPresupuestos_evaluar" name="evaluar" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioPresupuestos_evaluar__gasto" name="gasto" direction="in" type="C_Gasto" />
+          </ownedOperation>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_ServicioConsultaFinanciera" name="ServicioConsultaFinanciera">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_ServicioConsultaFinanciera_st" body="stereotype: service" />
+          <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="IR_ServicioConsultaFinanciera_IConsultaFinanciera" name="ServicioConsultaFinanciera_realiza_IConsultaFinanciera" client="C_ServicioConsultaFinanciera" supplier="I_IConsultaFinanciera" contract="I_IConsultaFinanciera" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioConsultaFinanciera_repoMovimientos" name="repoMovimientos" visibility="private" isReadOnly="true" type="I_IRepositorioMovimientos" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ServicioConsultaFinanciera_repoPresupuestos" name="repoPresupuestos" visibility="private" isReadOnly="true" type="I_IRepositorioPresupuestos" />
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioConsultaFinanciera_consultarHistorial" name="consultarHistorial" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_consultarHistorial__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_consultarHistorial__filtro" name="filtro" direction="in" type="C_FiltroMovimientos" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_consultarHistorial__pagina" name="pagina" direction="in" type="T_int" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_consultarHistorial__tamano" name="tamano" direction="in" type="T_int" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_consultarHistorial__return" name="return" direction="return" type="C_Pagina" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioConsultaFinanciera_obtenerMovimiento" name="obtenerMovimiento" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_obtenerMovimiento__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_obtenerMovimiento__idMovimiento" name="idMovimiento" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_obtenerMovimiento__return" name="return" direction="return" type="C_MovimientoDTO" />
+          </ownedOperation>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_ServicioConsultaFinanciera_obtenerResumen" name="obtenerResumen" visibility="public">
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_obtenerResumen__idUsuario" name="idUsuario" direction="in" type="T_UUID" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_obtenerResumen__desde" name="desde" direction="in" type="T_LocalDate" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_obtenerResumen__hasta" name="hasta" direction="in" type="T_LocalDate" />
+            <ownedParameter xmi:type="uml:Parameter" xmi:id="OP_ServicioConsultaFinanciera_obtenerResumen__return" name="return" direction="return" type="C_ResumenFinanciero" />
+          </ownedOperation>
+        </packagedElement>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Package" xmi:id="PK_excepciones" name="aplicacion.excepciones">
+        <packagedElement xmi:type="uml:Class" xmi:id="C_CategoriaNoDisponibleException" name="CategoriaNoDisponibleException">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_CategoriaNoDisponibleException_c" body="Definida en docs/architecture/arquitectura.md (P-12): excepcion de aplicacion, HTTP 422." />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_RangoInvalidoException" name="RangoInvalidoException">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_RangoInvalidoException_c" body="inventada: no definida en LOG-02 (NO VERIFICADO)" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_CredencialesInvalidasException" name="CredencialesInvalidasException">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_CredencialesInvalidasException_c" body="inventada: no definida en LOG-02 (NO VERIFICADO)" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_CuentaBloqueadaException" name="CuentaBloqueadaException">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_CuentaBloqueadaException_c" body="inventada: no definida en LOG-02 (NO VERIFICADO)" />
+        </packagedElement>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Package" xmi:id="PK_dto" name="dto">
+        <packagedElement xmi:type="uml:Class" xmi:id="C_RegistroCmd" name="RegistroCmd">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_RegistroCmd_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistroCmd_nombre" name="nombre" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistroCmd_correo" name="correo" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistroCmd_clave" name="clave" visibility="private" type="T_String" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_RegistrarGastoCmd" name="RegistrarGastoCmd">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_RegistrarGastoCmd_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarGastoCmd_idUsuario" name="idUsuario" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarGastoCmd_monto" name="monto" visibility="private" type="T_BigDecimal" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarGastoCmd_fecha" name="fecha" visibility="private" type="T_LocalDate" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarGastoCmd_descripcion" name="descripcion" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarGastoCmd_idCategoria" name="idCategoria" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarGastoCmd_metodoPago" name="metodoPago" visibility="private" type="E_MetodoPago" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_RegistrarIngresoCmd" name="RegistrarIngresoCmd">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_RegistrarIngresoCmd_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarIngresoCmd_idUsuario" name="idUsuario" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarIngresoCmd_monto" name="monto" visibility="private" type="T_BigDecimal" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarIngresoCmd_fecha" name="fecha" visibility="private" type="T_LocalDate" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarIngresoCmd_descripcion" name="descripcion" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarIngresoCmd_idCategoria" name="idCategoria" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_RegistrarIngresoCmd_fuente" name="fuente" visibility="private" type="T_String" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_ModificarMovimientoCmd" name="ModificarMovimientoCmd">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_ModificarMovimientoCmd_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ModificarMovimientoCmd_monto" name="monto" visibility="private" type="T_BigDecimal" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ModificarMovimientoCmd_fecha" name="fecha" visibility="private" type="T_LocalDate" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ModificarMovimientoCmd_descripcion" name="descripcion" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ModificarMovimientoCmd_idCategoria" name="idCategoria" visibility="private" type="T_UUID" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_FiltroMovimientos" name="FiltroMovimientos">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_FiltroMovimientos_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_FiltroMovimientos_desde" name="desde" visibility="private" type="T_LocalDate" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_FiltroMovimientos_hasta" name="hasta" visibility="private" type="T_LocalDate" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_FiltroMovimientos_tipo" name="tipo" visibility="private" type="E_TipoMovimiento" isReadOnly="true">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_FiltroMovimientos_tipo_lo" value="0" />
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_FiltroMovimientos_tipo_up" value="1" />
+          </ownedAttribute>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_FiltroMovimientos_idCategoria" name="idCategoria" visibility="private" type="T_UUID" isReadOnly="true">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_FiltroMovimientos_idCategoria_lo" value="0" />
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_FiltroMovimientos_idCategoria_up" value="1" />
+          </ownedAttribute>
+          <ownedOperation xmi:type="uml:Operation" xmi:id="OP_FiltroMovimientos_validar" name="validar" visibility="public" />
+          <ownedRule xmi:type="uml:Constraint" xmi:id="K_FiltroMovimientos_RN_13_rango" name="RN_13_rango">
+            <specification xmi:type="uml:OpaqueExpression" xmi:id="K_FiltroMovimientos_RN_13_rango_s">
+              <language>OCL</language>
+              <body>self.desde &lt;= self.hasta and self.hasta.toMonths() - self.desde.toMonths() &lt;= 24</body>
+            </specification>
+          </ownedRule>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_Pagina" name="Pagina">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_Pagina_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_Pagina_pagina" name="pagina" visibility="private" type="T_int" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_Pagina_tamano" name="tamano" visibility="private" type="T_int" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_Pagina_totalElementos" name="totalElementos" visibility="private" type="T_long" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_Pagina_elementos" name="elementos" visibility="private" type="C_MovimientoDTO" isReadOnly="true">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_Pagina_elementos_lo" value="0" />
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_Pagina_elementos_up" value="*" />
+          </ownedAttribute>
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_Pagina_t" body="Clase plantilla Pagina&lt;T&gt;; aqui T=MovimientoDTO." />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_MovimientoDTO" name="MovimientoDTO">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_MovimientoDTO_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_MovimientoDTO_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_MovimientoDTO_tipo" name="tipo" visibility="private" type="E_TipoMovimiento" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_MovimientoDTO_monto" name="monto" visibility="private" type="T_BigDecimal" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_MovimientoDTO_fecha" name="fecha" visibility="private" type="T_LocalDate" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_MovimientoDTO_descripcion" name="descripcion" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_MovimientoDTO_categoria" name="categoria" visibility="private" type="C_CategoriaDTO" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_MovimientoDTO_metodoPago" name="metodoPago" visibility="private" type="E_MetodoPago" isReadOnly="true">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_MovimientoDTO_metodoPago_lo" value="0" />
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_MovimientoDTO_metodoPago_up" value="1" />
+          </ownedAttribute>
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_MovimientoDTO_fuente" name="fuente" visibility="private" type="T_String" isReadOnly="true">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="P_MovimientoDTO_fuente_lo" value="0" />
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="P_MovimientoDTO_fuente_up" value="1" />
+          </ownedAttribute>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_CategoriaDTO" name="CategoriaDTO">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_CategoriaDTO_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_CategoriaDTO_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_CategoriaDTO_nombre" name="nombre" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_CategoriaDTO_tipo" name="tipo" visibility="private" type="E_TipoMovimiento" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_PresupuestoDTO" name="PresupuestoDTO">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_PresupuestoDTO_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_PresupuestoDTO_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_PresupuestoDTO_idCategoria" name="idCategoria" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_PresupuestoDTO_periodo" name="periodo" visibility="private" type="T_YearMonth" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_PresupuestoDTO_limite" name="limite" visibility="private" type="C_Dinero" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_PresupuestoDTO_consumo" name="consumo" visibility="private" type="C_Dinero" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_PresupuestoDTO_estado" name="estado" visibility="private" type="E_EstadoPresupuesto" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_UsuarioDTO" name="UsuarioDTO">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_UsuarioDTO_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_UsuarioDTO_id" name="id" visibility="private" type="T_UUID" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_UsuarioDTO_nombre" name="nombre" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_UsuarioDTO_correo" name="correo" visibility="private" type="T_String" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_TokensDTO" name="TokensDTO">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_TokensDTO_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_TokensDTO_accessToken" name="accessToken" visibility="private" type="T_String" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_TokensDTO_refreshToken" name="refreshToken" visibility="private" type="T_String" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_ResumenFinanciero" name="ResumenFinanciero">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_ResumenFinanciero_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ResumenFinanciero_desde" name="desde" visibility="private" type="T_LocalDate" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ResumenFinanciero_hasta" name="hasta" visibility="private" type="T_LocalDate" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ResumenFinanciero_totalIngresos" name="totalIngresos" visibility="private" type="C_Dinero" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ResumenFinanciero_totalGastos" name="totalGastos" visibility="private" type="C_Dinero" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_ResumenFinanciero_balance" name="balance" visibility="private" type="C_Dinero" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Class" xmi:id="C_TotalPorCategoria" name="TotalPorCategoria">
+          <ownedComment xmi:type="uml:Comment" xmi:id="C_TotalPorCategoria_st" body="stereotype: dto" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_TotalPorCategoria_categoria" name="categoria" visibility="private" type="C_CategoriaDTO" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_TotalPorCategoria_total" name="total" visibility="private" type="C_Dinero" isReadOnly="true" />
+          <ownedAttribute xmi:type="uml:Property" xmi:id="P_TotalPorCategoria_porcentaje" name="porcentaje" visibility="private" type="T_BigDecimal" isReadOnly="true" />
+        </packagedElement>
+        <packagedElement xmi:type="uml:Association" xmi:id="A_Resumen_Total" name="Resumen_Total" memberEnd="A_Resumen_Total_e1 A_Resumen_Total_e2">
+          <ownedEnd xmi:type="uml:Property" xmi:id="A_Resumen_Total_e1" name="resumen" type="C_ResumenFinanciero" association="A_Resumen_Total" aggregation="composite" />
+          <ownedEnd xmi:type="uml:Property" xmi:id="A_Resumen_Total_e2" name="porCategoria" type="C_TotalPorCategoria" association="A_Resumen_Total">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Resumen_Total_e2_lo" value="0" />
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Resumen_Total_e2_up" value="*" />
+          </ownedEnd>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Association" xmi:id="A_Resumen_Presupuesto" name="Resumen_Presupuesto" memberEnd="A_Resumen_Presupuesto_e1 A_Resumen_Presupuesto_e2">
+          <ownedEnd xmi:type="uml:Property" xmi:id="A_Resumen_Presupuesto_e1" name="resumen" type="C_ResumenFinanciero" association="A_Resumen_Presupuesto" aggregation="shared" />
+          <ownedEnd xmi:type="uml:Property" xmi:id="A_Resumen_Presupuesto_e2" name="presupuestos" type="C_PresupuestoDTO" association="A_Resumen_Presupuesto">
+            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="A_Resumen_Presupuesto_e2_lo" value="0" />
+            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="A_Resumen_Presupuesto_e2_up" value="*" />
+          </ownedEnd>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+  </uml:Model>
+</xmi:XMI>

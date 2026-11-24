@@ -1,0 +1,94 @@
+@startuml ER
+title ER — Finanzas Personales (fuente: V1__esquema.propuesta.sql, PROPUESTA)
+hide circle
+skinparam linetype ortho
+entity usuario {
+  * id : UUID <<PK>>
+  --
+  * nombre : VARCHAR(100)
+  * correo : VARCHAR(254) <<UK>>
+  * hash_contrasena : VARCHAR(100)
+  * estado : VARCHAR(10) [ACTIVA|ELIMINADA]
+  * intentos_fallidos : SMALLINT (0..5)
+  bloqueado_hasta : TIMESTAMPTZ
+  * fecha_registro : TIMESTAMPTZ
+  eliminada_en : TIMESTAMPTZ
+}
+entity categoria {
+  * id : UUID <<PK>>
+  --
+  id_propietario : UUID <<FK>> (NULL = predeterminada)
+  * nombre : VARCHAR(40)
+  * tipo : VARCHAR(7) [GASTO|INGRESO]
+  icono : VARCHAR(50)
+  --
+  UK (id, tipo)
+}
+entity movimiento {
+  * id : UUID <<PK>>
+  --
+  * id_usuario : UUID <<FK>>
+  * id_categoria : UUID <<FK>> (compuesta)
+  * tipo : VARCHAR(7) <<FK>> (compuesta)
+  * monto : NUMERIC(14,2)
+  * moneda : CHAR(3) = 'COP'
+  * fecha : DATE
+  descripcion : VARCHAR(255)
+  metodo_pago : VARCHAR(30)
+  fuente : VARCHAR(100)
+  * fecha_registro : TIMESTAMPTZ
+}
+entity presupuesto {
+  * id : UUID <<PK>>
+  --
+  * id_usuario : UUID <<FK>>
+  * id_categoria : UUID <<FK>> (compuesta)
+  * tipo_categoria : VARCHAR(7) = 'GASTO' <<FK>> (compuesta)
+  * periodo : DATE (día 1)
+  * limite : NUMERIC(14,2)
+  * notificado : BOOLEAN
+  --
+  UK (id_usuario, id_categoria, periodo)
+}
+entity sesion_refresco {
+  * id : UUID <<PK>>
+  --
+  * hash : CHAR(64) <<UK>>
+  * id_usuario : UUID <<FK>>
+  * expira : TIMESTAMPTZ
+  revocado_en : TIMESTAMPTZ
+  reemplazado_por : UUID <<FK>> (auto-FK)
+}
+entity token_recuperacion {
+  * id : UUID <<PK>>
+  --
+  * hash : CHAR(64) <<UK>>
+  * id_usuario : UUID <<FK>>
+  * expira : TIMESTAMPTZ
+  usado_en : TIMESTAMPTZ
+}
+usuario |o--o{ categoria : "id_propietario (opcional)"
+usuario ||--o{ movimiento : id_usuario
+usuario ||--o{ presupuesto : id_usuario
+usuario ||--o{ sesion_refresco : id_usuario
+usuario ||--o{ token_recuperacion : id_usuario
+categoria ||--o{ movimiento : "(id_categoria, tipo)"
+categoria ||--o{ presupuesto : "(id_categoria, tipo_categoria)"
+sesion_refresco |o--o| sesion_refresco : reemplazado_por
+note bottom of usuario
+  Todas las FK: ON DELETE RESTRICT (no CASCADE; borrado lógico, D-1).
+end note
+note as N1
+  CHECKs y reglas por RN
+  RN-01: movimiento.monto > 0 AND <= 999999999999.99; presupuesto.limite igual
+  RN-03: FK compuesta movimiento (id_categoria, tipo) -> categoria (id, tipo)
+  RN-04: triggers (movimiento, presupuesto) + id_propietario inmutable
+  RN-06: usuario.correo UNIQUE y = lower(correo)
+  RN-09: nombre 1..40, no vacío; unicidad lower(nombre) por propietario y entre predeterminadas
+  RN-10: presupuesto tipo_categoria = 'GASTO', periodo día 1, UK (usuario, categoría, periodo), FK compuesta
+  RN-14 (PROPUESTA): trigger; categoría propia no puede repetir tipo + nombre normalizado de una predeterminada
+  Otros: moneda = 'COP' (D-8); gasto exige metodo_pago y fuente NULL; ingreso exige metodo_pago NULL;
+  usuario.estado coherente con eliminada_en; hash ~ '^[0-9a-f]{64}$'
+end note
+footer Corregido en ai/redesign — render NO VERIFICADO
+@enduml

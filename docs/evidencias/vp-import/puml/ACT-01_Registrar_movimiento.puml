@@ -1,0 +1,93 @@
+@startuml ACT-01_Registrar_movimiento
+title ACT-01 Registrar movimiento (CU-03)
+footer Corregido en ai/redesign — render NO VERIFICADO
+
+|Usuario|
+start
+:Seleccionar tipo de movimiento;
+|Cliente Web|
+note right
+  Sesión (*a): se comprueba antes de la primera petición HTTP;
+  en la práctica ocurre en cualquier paso con petición.
+end note
+if (¿Sesión válida?) then (no)
+  |API|
+  :Renovar con refresh token;
+endif
+|Cliente Web|
+if (¿Sesión vigente o renovada?) then (no)
+  :Redirigir a Iniciar sesión (CU-02) conservando borrador;
+else (sí)
+  repeat
+    |Cliente Web|
+    :Solicitar categorías del tipo;
+    |API|
+    :Consultar categorías disponibles;
+    |Base de datos|
+    :Leer categorías predeterminadas y del usuario;
+    repeat
+      |Usuario|
+      :Completar formulario;
+      |Cliente Web|
+      :Validar formato;
+      if (¿Formato válido?) then (no)
+      else (sí)
+        :Enviar POST /api/v1/movimientos;
+        |API|
+        :Validar RN-01 a RN-04;
+        if (¿Categoría disponible?) then (no, 5b)
+          |Cliente Web|
+          :Informar error y recargar categorías;
+        else (sí)
+          |API|
+          if (¿Reglas cumplidas?) then (no, 5a)
+            |Cliente Web|
+            :Mostrar errores de campos;
+          else (sí)
+            |Base de datos|
+            :Insertar movimiento;
+            |API|
+            if (¿Persistencia exitosa?) then (no, 6a)
+              |Cliente Web|
+              :Mostrar "No se pudo guardar" y conservar datos;
+            else (sí)
+              |API|
+              if (¿Gasto con presupuesto?) then (sí)
+                :Evaluar consumo del presupuesto;
+                if (¿Excedido por primera vez?) then (sí)
+                  :Reclamar notificado=true (atómico);
+                  |Base de datos|
+                  :UPDATE presupuesto SET notificado WHERE NOT notificado;
+                  |API|
+                  if (¿Reclamo afectó 1 fila?) then (sí)
+                    :Notificar excedido (solicitud asíncrona);
+                    |Servicio de correo|
+                    :Enviar correo de alerta;
+                    |API|
+                    :Registrar error y reintentar 3 veces con backoff;
+                    note right
+                      El fallo del envío no revierte el gasto
+                      (flujo separado, sin retorno al camino principal).
+                    end note
+                  else (no)
+                  endif
+                else (no)
+                endif
+              else (no)
+              endif
+            endif
+          endif
+        endif
+      endif
+    repeat while (¿Corregir y reenviar? formato inválido, 5a o 6a) is (sí) not (no)
+    note right
+      Los flujos 5a y 6a conservan los datos y vuelven a
+      "Completar formulario"; 5b vuelve a "Solicitar categorías" (paso 2).
+    end note
+  repeat while (¿Categoría no disponible (5b)?) is (sí, recargar) not (no)
+  |Cliente Web|
+  :Mostrar confirmación y saldo actualizado;
+endif
+|Usuario|
+stop
+@enduml
